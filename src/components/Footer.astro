@@ -54,21 +54,20 @@ const research: { key: RouteKey; label: string }[] = [
 </footer>
 
 <style>
-  .footer { background: var(--navy-950); color: #b7bee3; padding-block: 72px 40px; font-size: 0.95rem; }
-  .footer a { color: #dfe4ff; text-decoration: none; }
-  .footer a:hover { color: #fff; text-decoration: underline; }
+  .footer { background: #fff; color: var(--ink-2); padding-block: 72px 40px; font-size: 0.95rem; border-top: 1px solid var(--line); }
+  .footer a { color: var(--ink); text-decoration: none; }
+  .footer a:hover { color: var(--violet-600); text-decoration: underline; }
   .footer__top { display: grid; gap: 40px; grid-template-columns: 1fr; }
   @media (min-width: 720px) { .footer__top { grid-template-columns: 1fr 1fr; } }
   @media (min-width: 1000px) { .footer__top { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; } }
-  /* The raster logo sits on black; screen blending lets the navy show through. */
-  .footer__logo { width: 220px; mix-blend-mode: screen; margin: -18px 0 0 -18px; }
-  .footer__statement { margin-top: 8px; max-width: 30ch; color: #dfe4ff; font-weight: 600; line-height: 1.4; }
-  .footer__h { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8f97c7; margin-bottom: 16px; }
+  .footer__logo { width: 230px; margin: -22px 0 0 -14px; }
+  .footer__statement { margin-top: 4px; max-width: 30ch; color: var(--ink); font-weight: 650; line-height: 1.4; }
+  .footer__h { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
   .footer__col ul { list-style: none; display: grid; gap: 10px; }
-  .footer__lang { margin-top: 6px; color: #dfe4ff; }
-  .footer__rule { margin-block: 48px 28px; opacity: 0.6; }
+  .footer__lang { margin-top: 6px; color: var(--ink); }
+  .footer__rule { margin-block: 48px 28px; }
   .footer__bottom { display: grid; gap: 12px; font-size: 0.85rem; }
   @media (min-width: 900px) { .footer__bottom { grid-template-columns: 1fr auto; align-items: end; gap: 40px; } }
-  .footer__disclaimer { max-width: 80ch; color: #9ea6d3; }
-  .footer__copy { color: #8f97c7; white-space: nowrap; }
+  .footer__disclaimer { max-width: 80ch; color: var(--muted); }
+  .footer__copy { color: var(--muted); white-space: nowrap; }
 </style>
