@@ -8,29 +8,43 @@ const { lang } = Astro.props;
 const d = t(lang);
 const h = d.home.hero;
 
-/* ---- Geometry for the molecular scene (viewBox 0 0 800 520) ---- */
-const RX = 470; // where the strand enters the ribosome
-const RY = 262;
+/* ---- Geometry for the molecular scene (viewBox 0 0 800 520) ----
+   5′ coding region (left) → ribosome (centre) → 3′UTR with SRSF3 (right). */
+const CX = 390; // ribosome centre
+const RY = 268; // strand height where it threads the ribosome
+const IN = 300; // strand enters the ribosome
+const OUT = 470; // strand leaves the ribosome
 const strandY = (x: number) => {
-  const k = Math.max(0, 1 - x / RX);
-  return RY + 58 * Math.pow(k, 0.85) * Math.sin((x / RX) * Math.PI * 2.6 + 0.5);
+  if (x < IN) {
+    const k = 1 - Math.max(0, x) / IN;
+    return RY + 46 * Math.pow(k, 0.8) * Math.sin(x * 0.024 + 0.6);
+  }
+  if (x <= OUT) return RY;
+  return RY + 12 * Math.sin((x - OUT) * 0.028);
 };
-const strandPts: string[] = [];
-for (let x = -10; x <= RX + 70; x += 6) strandPts.push(`${x.toFixed(0)} ${strandY(Math.min(x, RX)).toFixed(1)}`);
-const strandD = `M${strandPts.join(' L')}`;
-const ticks = Array.from({ length: 15 }, (_, i) => {
-  const x = 24 + i * 24;
-  const y = strandY(x);
-  const slope = strandY(x + 1) - strandY(x - 1);
+const path = (x0: number, x1: number) => {
+  const pts: string[] = [];
+  for (let x = x0; x <= x1; x += 5) pts.push(`${x} ${strandY(x).toFixed(1)}`);
+  return `M${pts.join(' L')}`;
+};
+const strandD = path(-10, 760);
+const codingD = path(-10, OUT);
+const utrD = path(OUT + 20, 740);
+const ticks = Array.from({ length: 11 }, (_, i) => {
+  const x = 20 + i * 24;
   const dir = i % 2 === 0 ? -1 : 1;
-  return { x, y, len: 12 + (i % 3) * 3, dir, fade: 1 - i / 22, slope };
+  return { x, y: strandY(x), len: 11 + (i % 3) * 3, dir, fade: 1 - i * 0.05 };
 });
-const beads = Array.from({ length: 8 }, (_, i) => ({
-  x: 600 + i * 27,
-  y: 204 - i * 11 + Math.sin(i * 1.1) * 10,
-  r: 15 - i * 0.9,
-  fill: ['#1e61ed', '#b02ef0', '#3a3dfc', '#fe8be4'][i % 4],
-}));
+// SRSF3 bound along the 3′UTR
+const srsf3 = [548, 604, 660].map((x) => ({ x, y: strandY(x) }));
+// Short nascent peptide leaving the top of the large subunit
+const beads = [
+  { x: 452, y: 112, r: 13, fill: '#1e61ed' },
+  { x: 480, y: 90, r: 12, fill: '#b02ef0' },
+  { x: 512, y: 78, r: 11, fill: '#3a3dfc' },
+  { x: 544, y: 72, r: 9.5, fill: '#fe8be4' },
+];
+const chainD = `M428 138 L${beads.map((b) => `${b.x} ${b.y}`).join(' L')}`;
 ---
 <section class="hero" data-hero aria-labelledby="hero-title">
   <div class="hero__bg" aria-hidden="true"></div>
@@ -89,64 +103,72 @@ const beads = Array.from({ length: 8 }, (_, i) => ({
         </defs>
 
         <g class="layer layer--back" data-depth="6">
-          <circle class="mol__glow" cx="495" cy="250" r="190" fill="url(#mol-glow)" />
+          <circle class="mol__glow" cx={CX} cy="250" r="190" fill="url(#mol-glow)" />
           <g class="mol__rings" fill="none" stroke="#6f7bff" stroke-opacity="0.16">
-            <circle cx="495" cy="250" r="150" />
-            <circle cx="495" cy="250" r="222" stroke-dasharray="2 10" />
+            <circle cx={CX} cy="250" r="150" />
+            <circle cx={CX} cy="250" r="222" stroke-dasharray="2 10" />
           </g>
         </g>
 
         <g class="layer layer--mid" data-depth="12">
-          <!-- mRNA strand -->
-          <path class="mol__strand" d={strandD} stroke="url(#mol-strand)" stroke-width="5" fill="none" stroke-linecap="round" />
+          <!-- 3′UTR highlight -->
+          <path class="mol__utr" d={utrD} stroke="#e04fd8" stroke-opacity="0.16" stroke-width="18" fill="none" stroke-linecap="round" />
+          <!-- mRNA: 5′ coding region through the ribosome, then 3′UTR -->
+          <path class="mol__strand" d={codingD} stroke="url(#mol-strand)" stroke-width="5" fill="none" stroke-linecap="round" />
+          <path d={utrD} stroke="#b77cf5" stroke-width="5" fill="none" stroke-linecap="round" />
           <path class="mol__flow" d={strandD} stroke="#e9ecff" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="1 30" />
           <g class="mol__ticks" stroke-linecap="round" stroke-width="5">
             {ticks.map((tk) => (
-              <path d={`M${tk.x} ${(tk.y + tk.dir * 6).toFixed(1)} v${(tk.dir * tk.len).toFixed(0)}`} stroke={tk.dir < 0 ? '#3a5cf5' : '#8b3cf0'} opacity={tk.fade.toFixed(2)} />
+              <path d={`M${tk.x} ${(tk.y + tk.dir * 6).toFixed(1)} v${tk.dir * tk.len}`} stroke={tk.dir < 0 ? '#3a5cf5' : '#8b3cf0'} opacity={tk.fade.toFixed(2)} />
             ))}
           </g>
+          <text class="mol__end" x="746" y={(strandY(740) + 5).toFixed(0)}>AAA</text>
 
-          <!-- Ribosome: small subunit (below) and large subunit (above), after the logo -->
-          <g class="mol__ribosome">
+          <!-- Ribosome (centre): large subunit above, small subunit below the strand -->
+          <g class="mol__ribosome" transform={`translate(${CX - 495} 6)`}>
             <path d="M404 292 C 414 266, 466 262, 518 266 C 570 270, 598 292, 590 324 C 580 362, 524 376, 472 366 C 424 356, 394 322, 404 292 Z" fill="url(#mol-sub-b)" />
             <path d="M392 226 C 376 160, 448 118, 522 126 C 594 134, 616 190, 580 224 C 552 250, 506 236, 470 244 C 430 254, 400 254, 392 226 Z" fill="url(#mol-sub-a)" />
             <path d="M420 190 C 450 150, 520 140, 560 170" stroke="#ffffff" stroke-opacity="0.55" stroke-width="3" fill="none" stroke-linecap="round" />
             <path d="M430 312 C 460 330, 520 336, 560 318" stroke="#ffffff" stroke-opacity="0.3" stroke-width="3" fill="none" stroke-linecap="round" />
           </g>
 
-          <!-- Antisense strand that approaches the regulatory node -->
+          <!-- SRSF3 bound to the 3′UTR: the translational brake -->
+          <g class="mol__brake" data-brake>
+            {srsf3.map((n) => (
+              <g transform={`translate(${n.x} ${n.y.toFixed(1)})`}>
+                <circle r="24" fill="#e04fd8" opacity="0.35" filter="url(#mol-soft)" class="mol__brake-halo" />
+                <circle r="13" fill="url(#mol-brake)" />
+                <circle r="13" fill="none" stroke="#ffe3f9" stroke-opacity="0.7" stroke-width="1.5" />
+              </g>
+            ))}
+            <path class="mol__hold" d={`M${srsf3[0].x - 16} ${srsf3[0].y - 8} C 520 214, 490 214, 474 236`} stroke="#ff9ff0" stroke-width="2.5" stroke-dasharray="3 5" fill="none" stroke-linecap="round" />
+          </g>
+
+          <!-- SRSF3-directed antisense arriving at the 3′UTR checkpoint -->
           <g class="mol__aso" data-aso>
             <path d="M-34 0 C -20 -8, -8 8, 6 0 S 26 -8, 34 0" stroke="url(#mol-aso)" stroke-width="5" fill="none" stroke-linecap="round" />
             <circle cx="-34" cy="0" r="4" fill="#8dafFD" />
           </g>
-
-          <!-- SRSF3 regulatory "brake" -->
-          <g class="mol__brake" data-brake transform="translate(408 262)">
-            <circle r="30" fill="#e04fd8" opacity="0.35" filter="url(#mol-soft)" class="mol__brake-halo" />
-            <path d="M-20 -18 Q 0 -30 20 -18" stroke="#ff9ff0" stroke-width="4" fill="none" stroke-linecap="round" class="mol__clamp" />
-            <path d="M-20 18 Q 0 30 20 18" stroke="#ff9ff0" stroke-width="4" fill="none" stroke-linecap="round" class="mol__clamp" />
-            <circle r="14" fill="url(#mol-brake)" />
-            <circle r="14" fill="none" stroke="#ffe3f9" stroke-opacity="0.7" stroke-width="1.5" />
-          </g>
         </g>
 
         <g class="layer layer--front" data-depth="20">
-          <path class="mol__tether" d="M576 214 C 584 210, 590 206, 600 204" stroke="#7e1bf1" stroke-width="3" fill="none" />
-          <path class="mol__chain" d={`M${beads.map((b) => `${b.x} ${b.y.toFixed(1)}`).join(' L')}`} stroke="#9c6bff" stroke-opacity="0.7" stroke-width="3" fill="none" data-chain />
+          <path class="mol__chain" d={chainD} stroke="#9c6bff" stroke-opacity="0.8" stroke-width="3" fill="none" data-chain />
           {beads.map((b, i) => (
-            <g class="mol__bead" data-bead={i} transform={`translate(${b.x} ${b.y.toFixed(1)})`}>
-              <circle r={b.r.toFixed(1)} fill={b.fill} />
+            <g class="mol__bead" data-bead={i} transform={`translate(${b.x} ${b.y})`}>
+              <circle r={b.r} fill={b.fill} />
               <circle r={(b.r * 0.42).toFixed(1)} cx={(-b.r * 0.3).toFixed(1)} cy={(-b.r * 0.32).toFixed(1)} fill="#ffffff" opacity="0.45" />
             </g>
           ))}
         </g>
 
         <g class="mol__labels" aria-hidden="true">
-          <text x="18" y="172">{h.labels.rna}</text>
-          <text x="600" y="104" class="mol__label-rib">{h.labels.ribosome}</text>
-          <path d="M598 110 L 566 150" stroke="#aeb6e0" stroke-opacity="0.5" />
-          <g class="mol__label-brake"><text x="318" y="334">{h.labels.srsf3}</text><path d="M366 326 L 396 284" stroke="#ff9ff0" stroke-opacity="0.6" /></g>
-          <text x="646" y="50" class="mol__label-protein">{h.labels.protein}</text>
+          <text x="14" y="190">{h.labels.rna}</text>
+          <text x="6" y="240" class="mol__label-end">5′</text>
+          <text x="232" y="96">{h.labels.ribosome}</text>
+          <path d="M300 104 L 330 140" stroke="#aeb6e0" stroke-opacity="0.5" />
+          <g class="mol__label-brake"><text x="578" y="222">{h.labels.srsf3}</text></g>
+          <text x="684" y="302" class="mol__label-utr">3′UTR</text>
+          <text x="560" y="44" class="mol__label-protein">{h.labels.protein}</text>
         </g>
       </svg>
 
@@ -187,20 +209,21 @@ const beads = Array.from({ length: 8 }, (_, i) => ({
     let px = 0, py = 0, cpx = 0, cpy = 0, raf = 0;
 
     const render = (p: number) => {
-      // 1 → 2: antisense approaches and engages the regulatory node
-      const approach = smooth(0.12, 0.45, p);
-      const release = smooth(0.42, 0.66, p);
-      aso.setAttribute('transform', `translate(${(330 + 78 * approach).toFixed(1)} ${(400 - 138 * approach).toFixed(1)}) rotate(${(-28 + 28 * approach).toFixed(1)})`);
-      aso.style.opacity = String((0.15 + 0.85 * smooth(0.05, 0.3, p)) * (1 - release));
-      brake.style.opacity = String(1 - release * 0.92);
-      brake.setAttribute('transform', `translate(${(408 - 26 * release).toFixed(1)} ${(262 + 46 * release).toFixed(1)}) scale(${(1 - 0.35 * release).toFixed(3)})`);
-      // 2 → 3: translation resumes, peptide emerges
+      // 1 → 2: antisense arrives at the 3′UTR checkpoint
+      const approach = smooth(0.1, 0.42, p);
+      const release = smooth(0.4, 0.64, p);
+      aso.setAttribute('transform', `translate(${(716 - 64 * approach).toFixed(1)} ${(450 - 118 * approach).toFixed(1)}) rotate(${(-24 + 24 * approach).toFixed(1)})`);
+      aso.style.opacity = String((0.15 + 0.85 * smooth(0.04, 0.26, p)) * (1 - release));
+      // SRSF3 is reduced: nodes release from the 3′UTR and fade
+      brake.style.opacity = String(1 - release * 0.94);
+      brake.setAttribute('transform', `translate(0 ${(26 * release).toFixed(1)})`);
+      // 2 → 3: translation resumes, a short peptide emerges
       const translate = smooth(0.58, 1, p);
       svg.style.setProperty('--glow', (0.35 + 0.65 * translate).toFixed(3));
       svg.style.setProperty('--flow', (0.2 + 0.8 * release).toFixed(3));
       chain.style.strokeDashoffset = String(chainLen * (1 - translate));
       beads.forEach((b, i) => {
-        const v = smooth(0.58 + i * 0.045, 0.66 + i * 0.045, p);
+        const v = smooth(0.6 + i * 0.08, 0.72 + i * 0.08, p);
         b.style.opacity = v.toFixed(3);
         b.style.setProperty('--s', (0.4 + 0.6 * v).toFixed(3));
       });
@@ -305,7 +328,10 @@ const beads = Array.from({ length: 8 }, (_, i) => ({
   .mol__bead circle:first-child { transform: scale(var(--s, 0.4)); transform-box: fill-box; transform-origin: center; }
   .mol__chain { stroke-dashoffset: 9999; }
   .mol__labels text { fill: #c3caf0; font-family: var(--font-mono); font-size: 17px; letter-spacing: 0.06em; text-transform: uppercase; }
-  .mol__label-brake text { fill: #ffb6f3; }
+  .mol__label-brake text, .mol__label-utr { fill: #ffb6f3; }
+  .mol__end, .mol__label-end { fill: #aeb6e0; font-family: var(--font-mono); font-size: 15px; }
+  [data-state='2'] .mol__utr { stroke-opacity: 0.06; }
+  .mol__utr { transition: stroke-opacity 0.4s var(--ease); }
   [data-state='2'] .mol__label-brake { opacity: 0.25; }
   .mol__labels, .mol__label-brake { transition: opacity 0.4s var(--ease); }
 
