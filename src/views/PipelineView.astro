@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import PipelineChart from '../components/PipelineChart.astro';
+import TechnologyCard from '../components/TechnologyCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PartnershipCTA from '../components/PartnershipCTA.astro';
+import { programs } from '../data/pipeline';
+import { t, l } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const p = d.pipeline;
+---
+<BaseLayout lang={lang} route="pipeline" title={d.meta.pipeline.title} description={d.meta.pipeline.description}>
+  <PageHero kicker={p.hero.kicker} title={p.hero.title} lede={p.hero.lede} />
+
+  <section class="section" aria-label={d.nav.pipeline}>
+    <div class="container stack" style="--stack: 1.5rem">
+      <PipelineChart lang={lang} />
+      <p class="small muted">{p.legend}</p>
+    </div>
+  </section>
+
+  <section class="section section--soft" aria-labelledby="programs">
+    <div class="container">
+      <SectionHeading kicker={d.nav.pipeline} title={d.home.pipelinePreview.title} id="programs" />
+      <div class="prog-grid">
+        {programs.map((pr) => (
+          <article class="prog card" data-reveal>
+            <span class="prog__kind">{p.kinds[pr.kind]}</span>
+            <h3 class="prog__name">{l(pr.name, lang)}</h3>
+            <p class="prog__ind">{l(pr.indication, lang)}</p>
+            <p class="prog__note">{l(pr.note, lang)}</p>
+          </article>
+        ))}
+      </div>
+      <p class="pl-note">{p.note}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="pillars">
+    <div class="container">
+      <SectionHeading index={d.home.tech.index} kicker={d.home.tech.kicker} title={d.home.tech.title} id="pillars" />
+      <div class="pillars">
+        <TechnologyCard variant="aso" {...d.home.tech.pillars[0]} />
+        <TechnologyCard variant="targeted" {...d.home.tech.pillars[1]} />
+      </div>
+    </div>
+  </section>
+
+  <PartnershipCTA lang={lang} />
+</BaseLayout>
+
+<style>
+  .prog-grid { display: grid; gap: 16px; margin-top: clamp(32px, 4vw, 48px); }
+  @media (min-width: 900px) { .prog-grid { grid-template-columns: repeat(3, 1fr); } }
+  .prog { display: grid; gap: 8px; align-content: start; }
+  .prog__kind { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet-600); }
+  .prog__name { font-size: 1.3rem; }
+  .prog__ind { font-weight: 600; color: var(--ink-2); }
+  .prog__note { color: var(--ink-2); font-size: 0.95rem; }
+  .pl-note { margin-top: 28px; font-size: 0.9rem; color: var(--muted); max-width: 70ch; }
+  .pillars { display: grid; gap: 20px; margin-top: clamp(32px, 4vw, 48px); }
+  @media (min-width: 900px) { .pillars { grid-template-columns: 1fr 1fr; } }
+</style>

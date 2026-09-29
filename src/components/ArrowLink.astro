@@ -1,0 +1,14 @@
+---
+interface Props { href: string; class?: string; external?: boolean; lang?: 'en' | 'fr' }
+const { href, class: className, external = false, lang = 'en' } = Astro.props;
+const newTab = lang === 'fr' ? '(s’ouvre dans un nouvel onglet)' : '(opens in a new tab)';
+---
+<a class:list={['link-arrow', className]} href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+  <slot />
+  <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+    {external
+      ? <path d="M5 3h8v8M13 3 3 13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+      : <path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />}
+  </svg>
+  {external && <span class="sr-only"> {newTab}</span>}
+</a>

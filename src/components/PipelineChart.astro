@@ -1,0 +1,110 @@
+---
+/**
+ * Pipeline chart — reads src/data/pipeline.ts.
+ * Desktop: horizontal stage grid. Mobile: stacked cards.
+ * Unconfirmed programs render a dashed, neutral track (no implied progress).
+ */
+import { programs, stages } from '../data/pipeline';
+import { t, l } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang; compact?: boolean }
+const { lang, compact = false } = Astro.props;
+const d = t(lang).pipeline;
+const pct = (i: number) => ((i + 1) / stages.length) * 100;
+---
+<div class:list={['pl', { 'pl--compact': compact }]} data-reveal>
+  <div class="pl__table" role="table" aria-label={t(lang).nav.pipeline}>
+    <div class="pl__head" role="row">
+      <span role="columnheader">{d.headers.program}</span>
+      {!compact && <span role="columnheader">{d.headers.modality}</span>}
+      <span role="columnheader">{d.headers.indication}</span>
+      <span role="columnheader" class="pl__stages">
+        {stages.map((s) => <span>{l(s, lang)}</span>)}
+      </span>
+    </div>
+    {programs.map((p) => (
+      <div class:list={['pl__row', `pl__row--${p.kind}`]} role="row">
+        <div role="cell" class="pl__prog">
+          <span class="pl__kind">{d.kinds[p.kind]}</span>
+          <span class="pl__name">{l(p.name, lang)}</span>
+          <span class="pl__target">{d.target}: {p.target}</span>
+        </div>
+        {!compact && <div role="cell" class="pl__mod">{l(p.modality, lang)}</div>}
+        <div role="cell" class="pl__ind">{l(p.indication, lang)}</div>
+        <div role="cell" class="pl__track">
+          <span class="pl__rail" aria-hidden="true">
+            {stages.map(() => <span class="pl__tick"></span>)}
+          </span>
+          {p.confirmed && p.stageIndex !== null ? (
+            <span class="pl__bar" style={`width:${pct(p.stageIndex)}%`}>
+              <span class="sr-only">{l(stages[p.stageIndex], lang)}</span>
+            </span>
+          ) : (
+            <span class="pl__tbc"><span class="pl__tbc-label">{d.tbc}</span></span>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Mobile cards -->
+  <ul class="pl__cards">
+    {programs.map((p) => (
+      <li class:list={['pl__card', `pl__row--${p.kind}`]}>
+        <span class="pl__kind">{d.kinds[p.kind]}</span>
+        <h3 class="pl__name">{l(p.name, lang)}</h3>
+        <dl>
+          <div><dt>{d.target}</dt><dd>{p.target}</dd></div>
+          <div><dt>{d.headers.modality}</dt><dd>{l(p.modality, lang)}</dd></div>
+          <div><dt>{d.headers.indication}</dt><dd>{l(p.indication, lang)}</dd></div>
+          <div><dt>{d.headers.stage}</dt><dd>{p.confirmed && p.stageIndex !== null ? l(stages[p.stageIndex], lang) : d.tbc}</dd></div>
+        </dl>
+        {!compact && <p class="pl__note">{l(p.note, lang)}</p>}
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .pl { --cols: minmax(190px, 1.1fr) minmax(170px, 1fr) minmax(170px, 1fr) 2.4fr; }
+  .pl--compact { --cols: minmax(190px, 1.1fr) minmax(170px, 1fr) 2.6fr; }
+  .pl__table { display: none; border: 1px solid var(--line); border-radius: var(--radius-lg); background: #fff; overflow: hidden; }
+  .pl__head, .pl__row { display: grid; grid-template-columns: var(--cols); gap: 20px; align-items: center; padding: 18px 24px; }
+  .pl__head { background: var(--bg-soft); font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
+  .pl__stages { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .pl__stages span { line-height: 1.3; }
+  .pl__row + .pl__row { border-top: 1px solid var(--line); }
+  .pl__row { padding-block: 24px; }
+  .pl__prog { display: grid; gap: 4px; }
+  .pl__kind { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet-600); }
+  .pl__name { font-weight: 700; font-size: 1.05rem; }
+  .pl__target { font-size: 0.82rem; color: var(--muted); }
+  .pl__mod, .pl__ind { font-size: 0.92rem; color: var(--ink-2); }
+  .pl__track { position: relative; height: 34px; }
+  .pl__rail { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .pl__tick { border-radius: 6px; background: var(--bg-soft); border: 1px solid var(--line); }
+  .pl__bar { position: absolute; left: 0; top: 7px; bottom: 7px; border-radius: 999px; background: var(--grad-brand); }
+  .pl__tbc {
+    position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+    height: 20px; border-radius: 999px; border: 1.5px dashed #b8bfd9; display: flex; align-items: center; padding-left: 12px;
+    background: repeating-linear-gradient(90deg, rgba(58, 61, 252, 0.04) 0 10px, transparent 10px 20px);
+  }
+  .pl__tbc-label { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: #fff; padding-inline: 6px; }
+  .pl__row--platform .pl__kind { color: var(--magenta-500); }
+
+  .pl__cards { list-style: none; display: grid; gap: 14px; }
+  .pl__card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: grid; gap: 8px; border-left: 4px solid; border-left-color: var(--indigo-500); }
+  .pl__card.pl__row--expansion { border-left-color: var(--violet-500); }
+  .pl__card.pl__row--platform { border-left-color: var(--purple-500); }
+  .pl__card dl { display: grid; gap: 8px; margin: 6px 0 0; }
+  .pl__card dl div { display: grid; grid-template-columns: 100px 1fr; gap: 12px; font-size: 0.92rem; }
+  .pl__card dt { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+  .pl__card dd { margin: 0; color: var(--ink-2); }
+  .pl__note { font-size: 0.88rem; color: var(--muted); }
+
+  @media (min-width: 960px) {
+    .pl__table { display: block; }
+    .pl__cards { display: none; }
+  }
+</style>

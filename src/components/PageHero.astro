@@ -1,0 +1,33 @@
+---
+import RnaStrand from './RnaStrand.astro';
+interface Props { kicker: string; title: string; lede?: string }
+const { kicker, title, lede } = Astro.props;
+---
+<section class="phero">
+  <div class="phero__bg" aria-hidden="true">
+    <RnaStrand class="phero__strand" />
+  </div>
+  <div class="container phero__inner">
+    <p class="kicker" data-reveal><span class="kicker__rule" aria-hidden="true"></span>{kicker}</p>
+    <h1 class="display phero__title" data-reveal>{title}</h1>
+    {lede && <p class="lede" data-reveal data-reveal-delay="1">{lede}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .phero {
+    position: relative; overflow: hidden;
+    padding: calc(var(--header-h) + clamp(56px, 8vw, 112px)) 0 clamp(56px, 7vw, 96px);
+    background:
+      radial-gradient(60% 80% at 100% 0%, rgba(126, 27, 241, 0.09), transparent 60%),
+      radial-gradient(50% 70% at 0% 100%, rgba(30, 97, 237, 0.07), transparent 60%),
+      var(--bg-soft);
+    border-bottom: 1px solid var(--line);
+  }
+  .phero__inner { position: relative; display: grid; gap: 22px; }
+  .phero__title { max-width: 18ch; }
+  .phero__bg { position: absolute; inset: 0; pointer-events: none; }
+  .phero__bg :global(.phero__strand) { position: absolute; right: -6%; top: 22%; width: min(760px, 70vw); opacity: 0.55; }
+  @media (max-width: 700px) { .phero__bg :global(.phero__strand) { top: auto; bottom: 8px; right: -30%; width: 120vw; opacity: 0.3; } }
+</style>

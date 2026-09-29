@@ -1,0 +1,134 @@
+---
+import Logo from './Logo.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import MobileNav from './MobileNav.astro';
+import { t, href, type RouteKey } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang; route: RouteKey; overDark?: boolean }
+const { lang, route, overDark = false } = Astro.props;
+const d = t(lang);
+const researchKeys: RouteKey[] = ['research', 'publications', 'patent'];
+const inResearch = researchKeys.includes(route);
+const main: { key: RouteKey; label: string }[] = [
+  { key: 'about', label: d.nav.about },
+  { key: 'science', label: d.nav.science },
+  { key: 'pipeline', label: d.nav.pipeline },
+];
+const research = [
+  { key: 'research' as RouteKey, label: d.nav.researchOverview },
+  { key: 'publications' as RouteKey, label: d.nav.publications },
+  { key: 'patent' as RouteKey, label: d.nav.patent },
+];
+---
+<header class:list={['site-header', { 'site-header--over-dark': overDark }]} data-header>
+  <div class="container site-header__inner">
+    <a class="site-header__brand" href={href('home', lang)}>
+      <Logo tone={overDark ? 'light' : 'dark'} id="hdr" class="site-header__logo" /><span class="sr-only"> — {d.nav.home}</span>
+    </a>
+
+    <nav class="site-nav" aria-label={d.nav.primary}>
+      <ul class="site-nav__list">
+        {main.map((item) => (
+          <li>
+            <a class="site-nav__link" href={href(item.key, lang)} aria-current={route === item.key ? 'page' : undefined}>{item.label}</a>
+          </li>
+        ))}
+        <li class="site-nav__dd" data-dropdown>
+          <button class="site-nav__link site-nav__trigger" type="button" aria-expanded="false" aria-controls="research-menu" data-dropdown-trigger aria-current={inResearch ? 'true' : undefined}>
+            {d.nav.research}
+            <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 3.5 5 7l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </button>
+          <ul class="site-nav__menu" id="research-menu" aria-label={d.nav.researchMenu} data-dropdown-menu>
+            {research.map((item) => (
+              <li>
+                <a href={href(item.key, lang)} aria-current={route === item.key ? 'page' : undefined}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </li>
+        <li>
+          <a class="site-nav__link" href={href('contact', lang)} aria-current={route === 'contact' ? 'page' : undefined}>{d.nav.contact}</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <LanguageSwitcher lang={lang} route={route} />
+      <a class="btn btn--primary btn--sm site-header__cta" href={href('contact', lang)}>{d.nav.cta}</a>
+      <button class="site-header__burger" type="button" aria-expanded="false" aria-controls="mobile-nav" data-menu-open>
+        <span class="sr-only">{d.nav.menu}</span>
+        <span class="burger" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+<MobileNav lang={lang} route={route} />
+
+<style>
+  .site-header {
+    position: fixed; inset: 0 0 auto 0; z-index: 100; height: var(--header-h);
+    display: flex; align-items: center;
+    transition: background-color 0.35s var(--ease), box-shadow 0.35s var(--ease), color 0.35s var(--ease);
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0);
+  }
+  .site-header--over-dark { color: #fff; }
+  .site-header.is-scrolled {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: saturate(160%) blur(10px);
+    -webkit-backdrop-filter: saturate(160%) blur(10px);
+    box-shadow: 0 1px 0 var(--line);
+    color: var(--ink);
+  }
+  .site-header:not(.site-header--over-dark) { background: rgba(255, 255, 255, 0.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .site-header__inner { display: flex; align-items: center; gap: 24px; }
+  .site-header__brand { text-decoration: none; display: inline-flex; color: inherit; }
+  .site-header--over-dark.is-scrolled :global(.logo__word) { color: var(--ink) !important; }
+
+  .site-nav { margin-left: auto; display: none; }
+  .site-nav__list { list-style: none; display: flex; align-items: center; gap: 4px; }
+  .site-nav__link {
+    position: relative; display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 12px; font-weight: 600; font-size: 0.94rem; color: inherit; text-decoration: none;
+    background: none; border: 0; cursor: pointer;
+  }
+  .site-nav__link::after {
+    content: ''; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 2px; border-radius: 2px;
+    background: var(--grad-brand); transform: scaleX(0); transform-origin: left; transition: transform 0.3s var(--ease);
+  }
+  .site-nav__link:hover { color: inherit; }
+  .site-nav__link:hover::after, .site-nav__link[aria-current]::after { transform: scaleX(1); }
+  .site-nav__trigger svg { transition: transform 0.2s var(--ease); }
+  .site-nav__dd { position: relative; }
+  .site-nav__menu {
+    list-style: none; position: absolute; top: calc(100% + 6px); left: -8px; min-width: 260px;
+    background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 8px; box-shadow: var(--shadow-md);
+    opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease), visibility 0.2s;
+  }
+  .site-nav__dd.is-open .site-nav__menu { opacity: 1; visibility: visible; transform: none; }
+  .site-nav__dd.is-open .site-nav__trigger svg { transform: rotate(180deg); }
+  .site-nav__menu a {
+    display: block; padding: 10px 12px; border-radius: 8px; color: var(--ink); text-decoration: none; font-weight: 550; font-size: 0.94rem;
+  }
+  .site-nav__menu a:hover, .site-nav__menu a[aria-current] { background: var(--bg-soft); color: var(--violet-600); }
+
+  .site-header__actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .site-header__cta { display: none; }
+  .site-header--over-dark:not(.is-scrolled) .site-header__cta { background: #fff; color: var(--navy-900); }
+
+  .site-header__burger {
+    width: 44px; height: 44px; border-radius: 12px; border: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 30%, transparent);
+    background: transparent; display: inline-grid; place-items: center; cursor: pointer; color: inherit;
+  }
+  .burger { width: 18px; height: 10px; position: relative; display: block; }
+  .burger span { position: absolute; left: 0; right: 0; height: 2px; background: currentColor; border-radius: 2px; }
+  .burger span:first-child { top: 0; } .burger span:last-child { bottom: 0; }
+
+  @media (min-width: 1080px) {
+    .site-nav { display: block; }
+    .site-header__actions { margin-left: 8px; }
+    .site-header__cta { display: inline-flex; }
+    .site-header__burger { display: none; }
+  }
+</style>

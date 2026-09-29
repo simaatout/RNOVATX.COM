@@ -1,0 +1,92 @@
+---
+/**
+ * Conceptual microglia transition (original illustration).
+ * Homeostatic (ramified) → chronically activated → functionally dysregulated.
+ * Deliberately avoids an M1/M2 binary; it depicts loss of function over time.
+ */
+import type { Lang } from '../data/site';
+import { t } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const c = d.home.challenge;
+
+type Cell = { branches: number; len: number; width: number; soma: number; sub: number; seed: number };
+const cells: Cell[] = [
+  { branches: 9, len: 62, width: 2.6, soma: 16, sub: 3, seed: 1 },
+  { branches: 7, len: 38, width: 5, soma: 23, sub: 1, seed: 2 },
+  { branches: 4, len: 22, width: 6, soma: 27, sub: 0, seed: 3 },
+];
+const rand = (s: number) => { const x = Math.sin(s * 999.1) * 10000; return x - Math.floor(x); };
+function processes(cell: Cell) {
+  const paths: string[] = [];
+  for (let i = 0; i < cell.branches; i++) {
+    const a = (i / cell.branches) * Math.PI * 2 + rand(cell.seed + i) * 0.5;
+    const L = cell.len * (0.75 + rand(cell.seed * 7 + i) * 0.5);
+    const x0 = Math.cos(a) * cell.soma * 0.8, y0 = Math.sin(a) * cell.soma * 0.8;
+    const x1 = Math.cos(a + 0.18) * L, y1 = Math.sin(a + 0.18) * L;
+    const cx = Math.cos(a - 0.15) * L * 0.55, cy = Math.sin(a - 0.15) * L * 0.55;
+    paths.push(`M${x0.toFixed(1)} ${y0.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x1.toFixed(1)} ${y1.toFixed(1)}`);
+    for (let k = 0; k < cell.sub; k++) {
+      const f = 0.45 + k * 0.18;
+      const bx = Math.cos(a) * L * f, by = Math.sin(a) * L * f;
+      const ba = a + (k % 2 ? 0.7 : -0.7);
+      const bl = L * 0.35;
+      paths.push(`M${bx.toFixed(1)} ${by.toFixed(1)} L${(bx + Math.cos(ba) * bl).toFixed(1)} ${(by + Math.sin(ba) * bl).toFixed(1)}`);
+    }
+  }
+  return paths;
+}
+const debris = [[-52, -40], [48, 44], [58, -30], [-40, 52], [-66, 8]];
+---
+<figure class="mg" data-reveal>
+  <div class="mg__row">
+    {cells.map((cell, i) => (
+      <div class="mg__cell" data-stage={i}>
+        <svg viewBox="-90 -90 180 180" aria-hidden="true" focusable="false">
+          <defs>
+            <radialGradient id={`mg-soma-${i}`} cx="0.4" cy="0.35" r="0.8">
+              <stop offset="0" stop-color={['#e3e9ff', '#e8dcff', '#e7e3f0'][i]} />
+              <stop offset="1" stop-color={['#3a5cf5', '#7e1bf1', '#7d77a6'][i]} />
+            </radialGradient>
+          </defs>
+          {i === 1 && <circle r="70" fill="#7e1bf1" opacity="0.08" />}
+          {i === 2 && debris.map(([x, y]) => <circle cx={x} cy={y} r="4.5" fill="#c02efd" opacity="0.5" />)}
+          {i === 0 && [[-60, -48], [62, 30]].map(([x, y]) => <circle cx={x} cy={y} r="3" fill="#3a5cf5" opacity="0.25" />)}
+          <g stroke={['#3a5cf5', '#7e1bf1', '#8e89b3'][i]} stroke-width={cell.width} stroke-linecap="round" fill="none">
+            {processes(cell).map((p) => <path d={p} />)}
+          </g>
+          <circle r={cell.soma} fill={`url(#mg-soma-${i})`} />
+          <circle r={cell.soma * 0.45} cx={cell.soma * -0.1} cy={cell.soma * 0.05} fill="#ffffff" opacity="0.35" />
+        </svg>
+        <figcaption class="mg__label">
+          <span class="mg__name">{c.states[i].label}</span>
+          <span class="mg__text">{c.states[i].text}</span>
+        </figcaption>
+      </div>
+    ))}
+  </div>
+  <div class="mg__axis" aria-hidden="true"><span></span></div>
+  <p class="mg__note">{c.diagramTitle}. {d.common.conceptual}</p>
+</figure>
+
+<style>
+  .mg { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); padding: clamp(20px, 3vw, 36px); box-shadow: var(--shadow-sm); }
+  .mg__row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .mg__cell { display: grid; justify-items: center; gap: 12px; text-align: center; }
+  .mg__cell svg { width: 100%; max-width: 170px; }
+  .mg__label { display: grid; gap: 4px; }
+  .mg__name { font-weight: 700; font-size: 0.95rem; }
+  .mg__cell[data-stage='0'] .mg__name { color: var(--blue-600); }
+  .mg__cell[data-stage='1'] .mg__name { color: var(--violet-600); }
+  .mg__cell[data-stage='2'] .mg__name { color: #5d587f; }
+  .mg__text { font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
+  .mg__axis { margin: 22px 0 14px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, #3a5cf5, #7e1bf1 55%, #8e89b3); position: relative; }
+  .mg__axis span { position: absolute; right: -2px; top: 50%; width: 10px; height: 10px; border-top: 3px solid #8e89b3; border-right: 3px solid #8e89b3; transform: translateY(-50%) rotate(45deg); }
+  .mg__note { font-size: 0.78rem; color: var(--muted); }
+  @media (max-width: 560px) {
+    .mg__row { grid-template-columns: 1fr; gap: 20px; }
+    .mg__cell { grid-template-columns: 110px 1fr; text-align: left; justify-items: start; align-items: center; }
+    .mg__axis { display: none; }
+  }
+</style>

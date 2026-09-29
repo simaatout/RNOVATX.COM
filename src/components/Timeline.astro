@@ -1,0 +1,42 @@
+---
+import { pubById, doiUrl } from '../data/publications';
+import { t } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Item { year: string; title: string; text: string; pubs: string[] }
+interface Props { items: Item[]; lang: Lang }
+const { items, lang } = Astro.props;
+const d = t(lang);
+---
+<ol class="tl">
+  {items.map((item, i) => (
+    <li class:list={['tl__item', { 'tl__item--now': item.pubs.length === 0 }]} data-reveal>
+      <span class="tl__node" aria-hidden="true"></span>
+      <span class="tl__year">{item.year}</span>
+      <div class="tl__card">
+        <h3 class="tl__title">{item.title}</h3>
+        <p class="tl__text">{item.text}</p>
+        {item.pubs.length > 0 && (
+          <p class="cite">
+            <span class="cite__label">{d.common.source}</span>
+            {item.pubs.map((id) => { const p = pubById(id); return <a href={doiUrl(p.doi)} target="_blank" rel="noopener noreferrer">{p.shortCite}</a>; })}
+          </p>
+        )}
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .tl { list-style: none; position: relative; display: grid; gap: 28px; padding-left: 36px; }
+  .tl::before { content: ''; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, #1e61ed, #7e1bf1 70%, #fe8be4); border-radius: 2px; }
+  .tl__item { position: relative; display: grid; gap: 8px; }
+  @media (min-width: 760px) { .tl__item { grid-template-columns: 110px 1fr; gap: 28px; align-items: start; } }
+  .tl__node { position: absolute; left: -36px; top: 6px; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 3px solid var(--indigo-500); box-shadow: 0 0 0 5px rgba(58, 61, 252, 0.1); }
+  .tl__item--now .tl__node { border-color: var(--purple-500); background: var(--purple-500); box-shadow: 0 0 0 6px rgba(176, 46, 240, 0.16); }
+  .tl__year { font-family: var(--font-mono); font-weight: 500; font-size: 0.9rem; color: var(--violet-600); padding-top: 4px; letter-spacing: 0.06em; }
+  .tl__card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 24px; display: grid; gap: 8px; }
+  .tl__item--now .tl__card { background: linear-gradient(160deg, #fff, #f6f0ff); border-color: #e4d9fb; }
+  .tl__title { font-size: 1.12rem; letter-spacing: -0.01em; }
+  .tl__text { color: var(--ink-2); }
+</style>

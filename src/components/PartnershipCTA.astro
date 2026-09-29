@@ -1,0 +1,37 @@
+---
+import CTAButton from './CTAButton.astro';
+import { t, href } from '../i18n';
+import { site, type Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang).home.partner;
+---
+<section class="section section--dark pcta" aria-labelledby="pcta-title">
+  <svg class="pcta__art" viewBox="0 0 600 300" aria-hidden="true">
+    <defs>
+      <linearGradient id="pcta-g" x1="0" x2="1"><stop offset="0" stop-color="#1e61ed" /><stop offset="0.6" stop-color="#7e1bf1" /><stop offset="1" stop-color="#fe8be4" /></linearGradient>
+      <radialGradient id="pcta-glow"><stop offset="0" stop-color="#7e1bf1" stop-opacity="0.6" /><stop offset="1" stop-color="#7e1bf1" stop-opacity="0" /></radialGradient>
+    </defs>
+    <circle cx="420" cy="150" r="150" fill="url(#pcta-glow)" />
+    <path d="M0 170 C 80 110, 150 110, 220 160 S 360 210, 420 150" stroke="url(#pcta-g)" stroke-width="3" fill="none" />
+    {[0, 1, 2, 3, 4, 5].map((i) => <circle cx={440 + i * 26} cy={150 - Math.sin(i) * 14} r={9 - i} fill={i % 2 ? '#b02ef0' : '#3a3dfc'} opacity={1 - i * 0.12} />)}
+  </svg>
+  <div class="container pcta__inner">
+    <h2 class="h2 pcta__title" id="pcta-title" data-reveal>{d.title}</h2>
+    <p class="lede" data-reveal data-reveal-delay="1">{d.body}</p>
+    <div class="btn-row" data-reveal data-reveal-delay="2">
+      <CTAButton href={href('contact', lang)} variant="light">{d.cta}</CTAButton>
+      <a class="btn btn--ghost-light" href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pcta { overflow: hidden; }
+  .pcta__art { position: absolute; right: -80px; top: 50%; transform: translateY(-50%); width: min(760px, 90vw); opacity: 0.55; pointer-events: none; }
+  .pcta__inner { position: relative; display: grid; gap: 24px; justify-items: start; }
+  .pcta__inner > :global(*) { max-width: 760px; }
+  .pcta__title { max-width: 18ch !important; }
+  @media (max-width: 700px) { .pcta__art { opacity: 0.25; } }
+</style>

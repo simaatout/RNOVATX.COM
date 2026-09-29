@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { t } from '../i18n';
+import { site, type Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const c = d.contact;
+const mailto = `mailto:${site.email}?subject=${encodeURIComponent(c.mailSubject)}`;
+/*
+ * Static site: no server-side form. Email is the primary contact channel.
+ * To add a form later, use a third-party form endpoint and keep it disabled
+ * until the endpoint URL is configured (do not collect data without one).
+ */
+---
+<BaseLayout lang={lang} route="contact" title={d.meta.contact.title} description={d.meta.contact.description}>
+  <PageHero kicker={c.hero.kicker} title={c.hero.title} lede={c.hero.lede} />
+
+  <section class="section" aria-label={c.emailUs}>
+    <div class="container contact">
+      <div class="contact__main" data-reveal>
+        <p class="kicker"><span class="kicker__rule" aria-hidden="true"></span>{c.emailUs}</p>
+        <a class="contact__email" href={mailto}>{site.email}</a>
+        <div class="btn-row">
+          <a class="btn btn--primary" href={mailto}>
+            {c.emailUs}
+            <svg class="btn__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </a>
+          <button class="btn btn--secondary" type="button" data-copy={site.email} data-copied={d.common.copied}>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" /><path d="M11 3.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h.5" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>
+            <span data-copy-label>{d.common.copyEmail}</span>
+          </button>
+          <span class="sr-only" role="status" data-copy-status></span>
+        </div>
+        <dl class="contact__facts">
+          <div><dt>{c.location}</dt><dd>{site.city[lang]}</dd></div>
+          <div><dt>{c.roots}</dt><dd>{site.roots[lang]}</dd></div>
+        </dl>
+      </div>
+      <ul class="contact__aud">
+        {c.audiences.map((a, i) => (
+          <li class="card" data-reveal data-reveal-delay={String(i % 3)}>
+            <span class="contact__n">{String(i + 1).padStart(2, '0')}</span>
+            <h2 class="contact__h">{a.title}</h2>
+            <p>{a.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact { display: grid; gap: 48px; }
+  @media (min-width: 980px) { .contact { grid-template-columns: 1.1fr 0.9fr; gap: 72px; align-items: start; } }
+  .contact__main { display: grid; gap: 24px; align-content: start; }
+  .contact__email {
+    font-size: clamp(1.6rem, 1rem + 3vw, 3rem); font-weight: 750; letter-spacing: -0.03em; line-height: 1.1; text-decoration: none; word-break: break-word;
+    background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .contact__email:hover { text-decoration: underline; text-decoration-color: var(--violet-500); }
+  :global(.btn.is-copied) { border-color: var(--indigo-500); color: var(--indigo-500); }
+  .contact__facts { display: grid; gap: 0; margin: 12px 0 0; }
+  .contact__facts div { display: grid; grid-template-columns: 160px 1fr; gap: 16px; padding-block: 14px; border-top: 1px solid var(--line); }
+  .contact__facts dt { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+  .contact__facts dd { margin: 0; font-weight: 600; }
+  .contact__aud { list-style: none; display: grid; gap: 12px; }
+  .contact__aud .card { display: grid; gap: 6px; }
+  .contact__n { font-family: var(--font-mono); font-size: 0.75rem; color: var(--violet-600); }
+  .contact__h { font-size: 1.1rem; letter-spacing: -0.01em; }
+  .contact__aud p { color: var(--ink-2); font-size: 0.95rem; }
+  @media (max-width: 520px) { .contact__facts div { grid-template-columns: 1fr; gap: 4px; } }
+</style>

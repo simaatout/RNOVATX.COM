@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '../components/CTAButton.astro';
+import { t, href } from '../i18n';
+const en = t('en').notFound;
+const fr = t('fr').notFound;
+---
+<BaseLayout lang="en" route="home" title={`${en.title} | RNOVA Tx`} description={en.text}>
+  <section class="nf">
+    <div class="container nf__inner">
+      <p class="kicker">404</p>
+      <h1 class="display">{en.title}</h1>
+      <p class="lede">{en.text}</p>
+      <p class="lede" lang="fr">{fr.text}</p>
+      <div class="btn-row">
+        <CTAButton href={href('home', 'en')}>{en.cta}</CTAButton>
+        <CTAButton href={href('home', 'fr')} variant="secondary"><span lang="fr">{fr.cta}</span></CTAButton>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf { padding: calc(var(--header-h) + 120px) 0 120px; background: var(--bg-soft); }
+  .nf__inner { display: grid; gap: 20px; }
+</style>

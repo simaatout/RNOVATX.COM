@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Timeline from '../components/Timeline.astro';
+import PartnershipCTA from '../components/PartnershipCTA.astro';
+import { t, href } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const r = d.research;
+---
+<BaseLayout lang={lang} route="research" title={d.meta.research.title} description={d.meta.research.description}>
+  <PageHero kicker={r.hero.kicker} title={r.hero.title} lede={r.hero.lede}>
+    <nav class="rlinks" aria-label={d.nav.researchMenu} data-reveal>
+      <a class="btn btn--secondary btn--sm" href={href('publications', lang)}>{r.links.publications}</a>
+      <a class="btn btn--secondary btn--sm" href={href('patent', lang)}>{r.links.patent}</a>
+    </nav>
+  </PageHero>
+
+  <section class="section" aria-label={r.hero.title}>
+    <div class="container container--narrow">
+      <Timeline items={r.timeline} lang={lang} />
+    </div>
+  </section>
+
+  <PartnershipCTA lang={lang} />
+</BaseLayout>
+
+<style>
+  .rlinks { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+</style>

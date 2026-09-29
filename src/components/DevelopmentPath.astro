@@ -1,0 +1,67 @@
+---
+/**
+ * Home §08 — development path. Status comes from src/data/pipeline.ts.
+ * Status is conveyed by text and shape, not colour alone.
+ */
+import { developmentPath, type PathStatus } from '../data/pipeline';
+import { t, l } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const legend = t(lang).home.path.legend;
+const order: PathStatus[] = ['published', 'active', 'tbc', 'planned'];
+const used = order.filter((s) => developmentPath.some((p) => p.status === s));
+---
+<div class="dp" data-reveal>
+  <ol class="dp__list">
+    {developmentPath.map((step, i) => (
+      <li class:list={['dp__step', `dp__step--${step.status}`]}>
+        <span class="dp__marker" aria-hidden="true">
+          {step.status === 'published' ? (
+            <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7.2 5.8 10 11 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          ) : <span>{i + 1}</span>}
+        </span>
+        <span class="dp__label">{l(step.label, lang)}</span>
+        <span class="dp__status">{legend[step.status]}</span>
+        <span class="dp__detail">{l(step.detail, lang)}</span>
+      </li>
+    ))}
+  </ol>
+  <ul class="dp__legend" aria-hidden="true">
+    {used.map((s) => <li class={`dp__key dp__key--${s}`}><span></span>{legend[s]}</li>)}
+  </ul>
+</div>
+
+<style>
+  .dp__list { list-style: none; display: grid; gap: 12px; counter-reset: dp; position: relative; }
+  @media (min-width: 980px) {
+    .dp__list { grid-template-columns: repeat(6, 1fr); gap: 0; }
+    .dp__list::before { content: ''; position: absolute; top: 19px; left: 8%; right: 8%; height: 2px; background: repeating-linear-gradient(90deg, #c8cee3 0 6px, transparent 6px 12px); }
+  }
+  .dp__step { position: relative; display: grid; grid-template-columns: 40px 1fr; column-gap: 14px; row-gap: 2px; align-items: start; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+  @media (min-width: 980px) {
+    .dp__step { grid-template-columns: 1fr; justify-items: center; text-align: center; border: 0; background: transparent; padding: 0 8px; row-gap: 6px; }
+  }
+  .dp__marker {
+    grid-row: span 3; position: relative; z-index: 1; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; background: #fff; border: 2px dashed #b8bfd9; color: var(--muted);
+  }
+  @media (min-width: 980px) { .dp__marker { grid-row: auto; margin-bottom: 8px; } }
+  .dp__step--published .dp__marker { background: var(--grad-cool); border: 0; box-shadow: 0 0 0 6px rgba(58, 61, 252, 0.12); }
+  .dp__step--active .dp__marker { border: 2px solid var(--purple-500); color: var(--purple-500); }
+  .dp__step--planned .dp__marker { border: 2px solid var(--line); color: #9aa1bf; }
+  .dp__label { font-weight: 700; font-size: 0.98rem; line-height: 1.25; }
+  .dp__status { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .dp__step--published .dp__status { color: var(--indigo-500); }
+  .dp__detail { font-size: 0.85rem; color: var(--ink-2); line-height: 1.45; margin-top: 4px; }
+  .dp__step--planned .dp__label, .dp__step--planned .dp__detail { color: #7c84a6; }
+
+  .dp__legend { list-style: none; display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 28px; font-size: 0.82rem; color: var(--muted); }
+  @media (min-width: 980px) { .dp__legend { justify-content: center; } }
+  .dp__key { display: inline-flex; align-items: center; gap: 8px; }
+  .dp__key span { width: 14px; height: 14px; border-radius: 50%; border: 2px dashed #b8bfd9; }
+  .dp__key--published span { background: var(--grad-cool); border: 0; }
+  .dp__key--active span { border: 2px solid var(--purple-500); }
+  .dp__key--planned span { border: 2px solid var(--line); }
+</style>

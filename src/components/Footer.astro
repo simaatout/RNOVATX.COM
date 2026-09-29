@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import logo from '../assets/brand/rnova-logo.png';
+import { t, href, type RouteKey } from '../i18n';
+import { site, type Lang } from '../data/site';
+
+interface Props { lang: Lang; route: RouteKey }
+const { lang, route } = Astro.props;
+const d = t(lang);
+const company: { key: RouteKey; label: string }[] = [
+  { key: 'home', label: d.nav.home },
+  { key: 'about', label: d.nav.about },
+  { key: 'science', label: d.nav.science },
+  { key: 'pipeline', label: d.nav.pipeline },
+  { key: 'contact', label: d.nav.contact },
+];
+const research: { key: RouteKey; label: string }[] = [
+  { key: 'research', label: d.nav.researchOverview },
+  { key: 'publications', label: d.nav.publications },
+  { key: 'patent', label: d.nav.patent },
+];
+---
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <Image src={logo} alt="RNOVA Therapeutics" width={260} widths={[260, 520]} sizes="260px" class="footer__logo" loading="lazy" />
+        <p class="footer__statement">{d.footer.statement}</p>
+      </div>
+      <nav class="footer__col" aria-label={d.footer.navHeading}>
+        <h2 class="footer__h">{d.footer.navHeading}</h2>
+        <ul>{company.map((i) => <li><a href={href(i.key, lang)}>{i.label}</a></li>)}</ul>
+      </nav>
+      <nav class="footer__col" aria-label={d.footer.researchHeading}>
+        <h2 class="footer__h">{d.footer.researchHeading}</h2>
+        <ul>{research.map((i) => <li><a href={href(i.key, lang)}>{i.label}</a></li>)}</ul>
+      </nav>
+      <div class="footer__col">
+        <h2 class="footer__h">{d.footer.contactHeading}</h2>
+        <ul>
+          <li>{site.city[lang]}</li>
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li class="footer__lang"><LanguageSwitcher lang={lang} route={route} variant="full" /></li>
+        </ul>
+      </div>
+    </div>
+    <div class="divider-strand footer__rule" aria-hidden="true"></div>
+    <div class="footer__bottom">
+      <p class="footer__disclaimer">{d.footer.disclaimer}</p>
+      <p class="footer__copy">© {site.copyrightYear} RNOVA Tx. {d.footer.rights}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--navy-950); color: #b7bee3; padding-block: 72px 40px; font-size: 0.95rem; }
+  .footer a { color: #dfe4ff; text-decoration: none; }
+  .footer a:hover { color: #fff; text-decoration: underline; }
+  .footer__top { display: grid; gap: 40px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .footer__top { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1000px) { .footer__top { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; } }
+  /* The raster logo sits on black; screen blending lets the navy show through. */
+  .footer__logo { width: 220px; mix-blend-mode: screen; margin: -18px 0 0 -18px; }
+  .footer__statement { margin-top: 8px; max-width: 30ch; color: #dfe4ff; font-weight: 600; line-height: 1.4; }
+  .footer__h { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8f97c7; margin-bottom: 16px; }
+  .footer__col ul { list-style: none; display: grid; gap: 10px; }
+  .footer__lang { margin-top: 6px; color: #dfe4ff; }
+  .footer__rule { margin-block: 48px 28px; opacity: 0.6; }
+  .footer__bottom { display: grid; gap: 12px; font-size: 0.85rem; }
+  @media (min-width: 900px) { .footer__bottom { grid-template-columns: 1fr auto; align-items: end; gap: 40px; } }
+  .footer__disclaimer { max-width: 80ch; color: #9ea6d3; }
+  .footer__copy { color: #8f97c7; white-space: nowrap; }
+</style>

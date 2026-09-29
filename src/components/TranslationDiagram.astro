@@ -1,0 +1,215 @@
+---
+/**
+ * Scroll-driven explanation of the SRSF3 translational checkpoint (original artwork).
+ * Steps: transcription → ribosome → repression → SRSF3 at 3′UTR → release.
+ */
+import type { Lang } from '../data/site';
+import { t } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const b = d.home.brake;
+const labels = lang === 'fr'
+  ? { nucleus: 'Noyau', cyto: 'Cytoplasme', gene: 'Gène immunitaire', ribo: 'Ribosome', utr: '3′UTR', srsf3: 'SRSF3', aso: 'Antisens', mrna: 'ARNm', protein: 'Protéine' }
+  : { nucleus: 'Nucleus', cyto: 'Cytoplasm', gene: 'Immune gene', ribo: 'Ribosome', utr: '3′UTR', srsf3: 'SRSF3', aso: 'Antisense', mrna: 'mRNA', protein: 'Protein' };
+const wave = (x0: number, y0: number, len: number, amp = 5, per = 18) => {
+  const pts: string[] = [];
+  for (let x = 0; x <= len; x += 3) pts.push(`${(x0 + x).toFixed(0)} ${(y0 + Math.sin(x / per * Math.PI) * amp).toFixed(1)}`);
+  return `M${pts.join(' L')}`;
+};
+const peptide = Array.from({ length: 7 }, (_, i) => ({ x: 452 + i * 20, y: 150 - i * 13 + Math.sin(i) * 6, r: 9 - i * 0.5, fill: ['#1e61ed', '#b02ef0', '#3a3dfc', '#fe8be4'][i % 4] }));
+---
+<div class="td" data-td>
+  <div class="td__stage">
+    <figure class="td__fig step-0" data-td-fig>
+      <svg viewBox="0 0 640 380" role="img" aria-label={b.title} focusable="false">
+        <defs>
+          <linearGradient id="td-mrna" x1="0" x2="1"><stop offset="0" stop-color="#2f5cf0" /><stop offset="1" stop-color="#7e1bf1" /></linearGradient>
+          <radialGradient id="td-rib" cx="0.35" cy="0.3" r="0.9"><stop offset="0" stop-color="#eef1ff" /><stop offset="0.5" stop-color="#a9b9ff" /><stop offset="1" stop-color="#6a3cf0" /></radialGradient>
+          <radialGradient id="td-srsf3"><stop offset="0" stop-color="#ffd1f4" /><stop offset="1" stop-color="#c62fcf" /></radialGradient>
+        </defs>
+
+        <!-- compartments -->
+        <path d="M0 20 H 170 C 214 20, 230 60, 230 110 V 270 C 230 320, 214 360, 170 360 H 0 Z" fill="#eef1fb" stroke="#d3d9ef" stroke-width="2" />
+        <g class="td__pores" fill="#fff" stroke="#c8cee3" stroke-width="2">
+          <rect x="222" y="140" width="16" height="24" rx="7" />
+          <rect x="222" y="226" width="16" height="24" rx="7" />
+        </g>
+        <text class="td__lbl" x="22" y="48">{labels.nucleus}</text>
+        <text class="td__lbl" x="262" y="48">{labels.cyto}</text>
+
+        <!-- gene -->
+        <g class="td__gene">
+          <path d="M22 300 H 208" stroke="#aab3d4" stroke-width="4" stroke-linecap="round" />
+          <path d="M22 312 H 208" stroke="#aab3d4" stroke-width="4" stroke-linecap="round" />
+          <rect x="70" y="294" width="90" height="24" rx="6" fill="none" stroke="url(#td-mrna)" stroke-width="3" />
+          <text class="td__lbl td__lbl--sm" x="70" y="342">{labels.gene}</text>
+        </g>
+
+        <!-- step 0: many transcripts made in the nucleus -->
+        <g class="td__tx" stroke="url(#td-mrna)" stroke-width="4" fill="none" stroke-linecap="round">
+          <path class="td__pop" style="--i:0" d={wave(52, 250, 70)} />
+          <path class="td__pop" style="--i:1" d={wave(100, 220, 70)} />
+          <path class="td__pop" style="--i:2" d={wave(44, 188, 70)} />
+          <path class="td__pop" style="--i:3" d={wave(110, 156, 70)} />
+          <path class="td__pop" style="--i:4" d={wave(56, 122, 70)} />
+        </g>
+
+        <!-- step 1+: transcripts in the cytoplasm, one engaged on the ribosome -->
+        <g class="td__cyto" stroke="url(#td-mrna)" stroke-width="4" fill="none" stroke-linecap="round">
+          <path d={wave(262, 110, 70)} />
+          <path d={wave(270, 300, 70)} />
+        </g>
+        <g class="td__engaged">
+          <path d={wave(250, 210, 330, 6, 20)} stroke="url(#td-mrna)" stroke-width="5" fill="none" stroke-linecap="round" />
+          <!-- 3′UTR segment -->
+          <path class="td__utr" d="M500 200 H 600" stroke="#e04fd8" stroke-width="10" stroke-opacity="0.18" stroke-linecap="round" />
+          <text class="td__lbl td__lbl--utr" x="522" y="248">{labels.utr}</text>
+          <text class="td__lbl td__lbl--sm" x="598" y="232">AAA</text>
+          <path d="M360 190 C 356 150, 400 124, 440 128 C 482 132, 496 160, 480 184 C 468 200, 440 196, 420 198 C 396 200, 364 206, 360 190 Z" fill="url(#td-rib)" />
+          <path d="M366 226 C 372 212, 404 212, 432 214 C 462 216, 478 228, 472 246 C 466 266, 432 272, 404 266 C 380 260, 360 244, 366 226 Z" fill="url(#td-rib)" />
+          <text class="td__lbl td__lbl--sm" x="372" y="300">{labels.ribo}</text>
+        </g>
+
+        <!-- step 2+: missing protein (ghost) and brake -->
+        <g class="td__ghost" fill="none" stroke="#a8afc9" stroke-width="2" stroke-dasharray="4 5">
+          {peptide.map((p) => <circle cx={p.x} cy={p.y.toFixed(1)} r={p.r} />)}
+        </g>
+        <g class="td__stop" stroke="#e04fd8" stroke-width="4" stroke-linecap="round">
+          <path d="M520 60 L 548 88 M548 60 L520 88" />
+        </g>
+
+        <!-- step 3: SRSF3 on the 3′UTR -->
+        <g class="td__srsf3">
+          {[512, 540, 568].map((x, i) => (
+            <g class="td__srsf3-dot" style={`--i:${i}`} transform={`translate(${x} ${200 + Math.sin((x - 250) / 20 * Math.PI) * 6})`}>
+              <circle r="11" fill="url(#td-srsf3)" />
+            </g>
+          ))}
+          <text class="td__lbl td__lbl--srsf3" x="566" y="176">{labels.srsf3}</text>
+        </g>
+
+        <!-- step 4: antisense reduces SRSF3, protein is made -->
+        <g class="td__aso" stroke="#8dafFD" stroke-width="5" fill="none" stroke-linecap="round">
+          <path d="M560 330 C 574 320, 586 340, 600 330 S 622 320, 632 330" />
+          <text class="td__lbl td__lbl--aso" x="540" y="364" stroke="none">{labels.aso}</text>
+        </g>
+        <g class="td__protein">
+          <path d={`M${peptide.map((p) => `${p.x} ${p.y.toFixed(1)}`).join(' L')}`} stroke="#9c6bff" stroke-width="3" fill="none" />
+          {peptide.map((p, i) => <circle class="td__bead" style={`--i:${i}`} cx={p.x} cy={p.y.toFixed(1)} r={p.r} fill={p.fill} />)}
+        </g>
+      </svg>
+
+      <div class="td__meters" aria-hidden="true">
+        <div class="meter"><span class="meter__lbl">{labels.mrna}</span><span class="meter__bar"><span class="meter__fill meter__fill--mrna"></span></span></div>
+        <div class="meter"><span class="meter__lbl">{labels.protein}</span><span class="meter__bar"><span class="meter__fill meter__fill--protein"></span></span></div>
+      </div>
+      <figcaption class="td__cap">{d.common.conceptual}</figcaption>
+    </figure>
+  </div>
+
+  <ol class="td__steps">
+    {b.steps.map((s, i) => (
+      <li class="td__step" data-td-step={i}>
+        <span class="td__num">{String(i + 1).padStart(2, '0')}</span>
+        <div>
+          <h3 class="td__h">{s.title}</h3>
+          <p>{s.text}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-td]').forEach((root) => {
+    const fig = root.querySelector<HTMLElement>('[data-td-fig]')!;
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-td-step]'));
+    const set = (n: number) => {
+      fig.className = fig.className.replace(/\b(step|gte)-\d\b/g, '').trim();
+      fig.classList.add(`step-${n}`);
+      for (let i = 0; i <= n; i++) fig.classList.add(`gte-${i}`);
+      steps.forEach((s, i) => s.classList.toggle('is-active', i === n));
+    };
+    set(0);
+    if (!('IntersectionObserver' in window)) { set(4); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) set(Number((e.target as HTMLElement).dataset.tdStep)); });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    steps.forEach((s) => io.observe(s));
+  });
+</script>
+
+<style>
+  .td { display: grid; gap: 32px; }
+  @media (min-width: 900px) { .td { grid-template-columns: 1.1fr 0.9fr; gap: 64px; align-items: start; } }
+  .td__stage { position: sticky; top: calc(var(--header-h) + 8px); z-index: 2; }
+  @media (min-width: 900px) { .td__stage { top: calc(var(--header-h) + 48px); } }
+  .td__fig {
+    margin: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: clamp(12px, 2vw, 24px); box-shadow: var(--shadow-md);
+  }
+  .td__fig svg { width: 100%; height: auto; }
+  .td__lbl { font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; fill: #5a6389; }
+  .td__lbl--sm { font-size: 12px; }
+  .td__lbl--utr, .td__lbl--srsf3 { fill: #b0249f; font-weight: 500; }
+  .td__lbl--aso { fill: #3a5cf5; }
+
+  /* visibility by step (classes set by script) */
+  .td__tx, .td__cyto, .td__engaged, .td__ghost, .td__stop, .td__srsf3, .td__aso, .td__protein, .td__utr, .td__lbl--utr {
+    opacity: 0; transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  }
+  .gte-0 .td__tx { opacity: 1; }
+  .gte-1 .td__tx { opacity: 0.35; }
+  .gte-1 .td__cyto, .gte-1 .td__engaged { opacity: 1; }
+  .gte-2 .td__ghost, .gte-2 .td__stop { opacity: 1; }
+  .gte-3 .td__srsf3, .gte-3 .td__utr, .gte-3 .td__lbl--utr { opacity: 1; }
+  .gte-2 .td__srsf3 { opacity: 0.55; }
+  .gte-3 .td__srsf3 { opacity: 1; }
+  .gte-4 .td__srsf3 { opacity: 0.12; }
+  .gte-4 .td__stop, .gte-4 .td__ghost { opacity: 0; }
+  .gte-4 .td__aso, .gte-4 .td__protein { opacity: 1; }
+  .td__bead { opacity: 0; transition: opacity 0.4s var(--ease) calc(var(--i) * 90ms); }
+  .gte-4 .td__bead { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .step-3 .td__srsf3-dot circle { animation: td-pulse 1.8s ease-in-out infinite; animation-delay: calc(var(--i) * 0.2s); transform-box: fill-box; transform-origin: center; }
+    @keyframes td-pulse { 50% { transform: scale(1.18); } }
+    .step-0 .td__pop { animation: td-pop 0.7s var(--ease) both; animation-delay: calc(var(--i) * 0.12s); }
+    @keyframes td-pop { from { opacity: 0; transform: translateY(10px); } }
+  }
+
+  .td__meters { display: grid; gap: 10px; margin-top: 12px; padding-inline: 4px; }
+  .meter { display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 12px; }
+  .meter__lbl { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .meter__bar { height: 8px; border-radius: 8px; background: var(--bg-cool); overflow: hidden; }
+  .meter__fill { display: block; height: 100%; width: 4%; border-radius: 8px; transition: width 0.8s var(--ease); }
+  .meter__fill--mrna { background: linear-gradient(90deg, #2f5cf0, #7e1bf1); }
+  .meter__fill--protein { background: linear-gradient(90deg, #7e1bf1, #fe8be4); }
+  .gte-0 .meter__fill--mrna { width: 92%; }
+  .gte-4 .meter__fill--protein { width: 78%; }
+  .td__cap { margin-top: 10px; font-size: 0.75rem; color: var(--muted); padding-inline: 4px; }
+
+  .td__steps { list-style: none; display: grid; gap: clamp(24px, 20vh, 200px); padding-block: 4vh 20vh; }
+  .td__step {
+    display: grid; grid-template-columns: auto 1fr; gap: 18px; padding: 22px 24px; border-radius: var(--radius);
+    border: 1px solid transparent; background: rgba(255, 255, 255, 0.9);
+    transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease), opacity 0.4s var(--ease);
+    opacity: 0.45;
+  }
+  .td__step.is-active { opacity: 1; border-color: var(--line); box-shadow: var(--shadow-md); }
+  .td__num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--violet-600); padding-top: 4px; }
+  .td__h { font-size: 1.15rem; margin-bottom: 6px; letter-spacing: -0.01em; }
+  .td__step p { color: var(--ink-2); }
+  @media (max-width: 899px) {
+    .td__stage { top: calc(var(--header-h) + 4px); }
+    .td__fig { padding: 10px; }
+    .td__meters { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .meter { grid-template-columns: auto 1fr; gap: 8px; }
+    .td__cap { display: none; }
+    .td__steps { gap: 38vh; padding-block: 6vh 24vh; }
+    .td__step { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .td__step { opacity: 1; }
+  }
+</style>

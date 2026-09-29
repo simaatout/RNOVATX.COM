@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import PublicationCard from '../components/PublicationCard.astro';
+import { publications, topicLabels, type Topic } from '../data/publications';
+import { t, l } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const p = d.publications;
+const sorted = [...publications].sort((a, b) => b.year - a.year || Number(!!b.featured) - Number(!!a.featured));
+const topics = (Object.keys(topicLabels) as Topic[]).filter((tp) => publications.some((pub) => pub.topics.includes(tp)));
+---
+<BaseLayout lang={lang} route="publications" title={d.meta.publications.title} description={d.meta.publications.description}>
+  <PageHero kicker={p.hero.kicker} title={p.hero.title} lede={p.hero.lede} />
+
+  <section class="section" aria-label={p.hero.kicker}>
+    <div class="container">
+      <div class="pubs__bar">
+        <div class="pubs__filters" role="group" aria-label={p.filterLabel} data-pub-filters>
+          <button type="button" class="chip" aria-pressed="true" data-topic="all">{p.all}</button>
+          {topics.map((tp) => <button type="button" class="chip" aria-pressed="false" data-topic={tp}>{l(topicLabels[tp], lang)}</button>)}
+        </div>
+        <p class="pubs__count small muted" aria-live="polite" data-pub-count data-template={p.count(0)}>{p.count(sorted.length)}</p>
+      </div>
+      <div class="pubs__list">
+        {sorted.map((pub) => <PublicationCard pub={pub} lang={lang} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>('[data-pub-filters]');
+  const count = document.querySelector<HTMLElement>('[data-pub-count]');
+  if (wrap && count) {
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-topics]'));
+    const tpl = count.dataset.template!; // e.g. "0 publications"
+    wrap.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-topic]');
+      if (!btn) return;
+      const topic = btn.dataset.topic!;
+      wrap.querySelectorAll('[data-topic]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      let n = 0;
+      cards.forEach((c) => {
+        const show = topic === 'all' || c.dataset.topics!.split(' ').includes(topic);
+        c.hidden = !show;
+        if (show) n++;
+      });
+      count.textContent = tpl.replace(/^0/, String(n)).replace(/publications$/, n === 1 ? 'publication' : 'publications');
+    });
+  }
+</script>
+
+<style>
+  .pubs__bar { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+  .pubs__filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line-strong); background: #fff; cursor: pointer;
+    font-size: 0.9rem; font-weight: 600; color: var(--ink-2); transition: all 0.2s var(--ease);
+  }
+  .chip:hover { border-color: var(--indigo-500); color: var(--indigo-500); }
+  .chip[aria-pressed='true'] { background: var(--navy-900); border-color: var(--navy-900); color: #fff; }
+  .pubs__list { display: grid; gap: 18px; }
+  @media (min-width: 1000px) { .pubs__list { grid-template-columns: 1fr 1fr; } }
+  .pubs__list :global([hidden]) { display: none !important; }
+</style>

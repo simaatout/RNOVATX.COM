@@ -1,0 +1,47 @@
+---
+/**
+ * Vector brand mark derived from RNOVA LOGO.png:
+ * RNA strand → ribosome (two subunits) → emerging peptide beads.
+ * Used in the header/footer where the full raster logo would be too heavy.
+ */
+interface Props { tone?: 'dark' | 'light'; class?: string; showWordmark?: boolean; id?: string }
+const { tone = 'dark', class: className = '', showWordmark = true, id = 'lg' } = Astro.props;
+const text = tone === 'dark' ? '#0b1233' : '#ffffff';
+---
+<span class:list={['logo', className]}>
+  <svg class="logo__mark" viewBox="0 0 96 40" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id={`${id}-g`} x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="#1e61ed" />
+        <stop offset="0.45" stop-color="#3a3dfc" />
+        <stop offset="0.75" stop-color="#7e1bf1" />
+        <stop offset="1" stop-color="#c02efd" />
+      </linearGradient>
+      <linearGradient id={`${id}-r`} x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0" stop-color="#8dafFD" />
+        <stop offset="1" stop-color="#7e1bf1" />
+      </linearGradient>
+    </defs>
+    <path d="M2 24 C 10 12, 18 12, 24 21 S 36 30, 44 22" fill="none" stroke={`url(#${id}-g)`} stroke-width="3" stroke-linecap="round" />
+    <g stroke={`url(#${id}-g)`} stroke-width="2" stroke-linecap="round" opacity="0.8">
+      <path d="M11 16.5v-4" /><path d="M17 16v-4" /><path d="M27 25.5v4" /><path d="M33 26.5v4" />
+    </g>
+    <path d="M46 13c3-8 15-9 19-3 3 5-4 8-10 8-6 0-11-1-9-5z" fill={`url(#${id}-r)`} />
+    <path d="M47 26c2 6 13 8 17 3 3-4-2-8-8-8s-11 1-9 5z" fill={`url(#${id}-r)`} opacity="0.9" />
+    <path d="M60 20 C 66 20, 68 16, 72 16" fill="none" stroke="#7e1bf1" stroke-width="2" />
+    <circle cx="73" cy="16" r="3.4" fill="#1e61ed" />
+    <circle cx="81" cy="18.5" r="3" fill="#b02ef0" />
+    <circle cx="88" cy="21" r="2.6" fill="#3a3dfc" />
+    <circle cx="94" cy="18" r="2" fill="#fe8be4" />
+  </svg>
+  {showWordmark && (
+    <span class="logo__word" style={`color:${text}`}>RNOVA <span class="logo__tx">Tx</span></span>
+  )}
+</span>
+
+<style>
+  .logo { display: inline-flex; align-items: center; gap: 10px; }
+  .logo__mark { width: 58px; height: auto; flex: none; }
+  .logo__word { font-weight: 800; font-size: 1.28rem; letter-spacing: 0.06em; line-height: 1; }
+  .logo__tx { font-weight: 600; letter-spacing: 0.02em; margin-left: 0.04em; opacity: 0.75; }
+</style>

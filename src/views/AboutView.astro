@@ -1,0 +1,114 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import TeamCard from '../components/TeamCard.astro';
+import PartnershipCTA from '../components/PartnershipCTA.astro';
+import logo from '../assets/brand/rnova-logo.png';
+import { team } from '../data/team';
+import { t } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const a = d.about;
+const founders = team.filter((p) => p.group === 'founders');
+const members = team.filter((p) => p.group === 'team');
+---
+<BaseLayout lang={lang} route="about" title={d.meta.about.title} description={d.meta.about.description}>
+  <PageHero kicker={a.hero.kicker} title={a.hero.title} lede={a.hero.lede} />
+
+  <!-- Our story -->
+  <section class="section" aria-labelledby="story">
+    <div class="container">
+      <SectionHeading kicker={a.story.kicker} title={a.story.title} id="story" />
+      <ol class="story">
+        {a.story.steps.map((s, i) => (
+          <li class="story__step" data-reveal data-reveal-delay={String(i % 3)}>
+            <span class="story__n">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="story__h">{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Mission / Vision -->
+  <section class="section section--soft" aria-label={`${a.mission.kicker} · ${a.vision.kicker}`}>
+    <div class="container mv">
+      <div class="mv__item" data-reveal>
+        <p class="kicker"><span class="kicker__rule" aria-hidden="true"></span>{a.mission.kicker}</p>
+        <p class="mv__text">{a.mission.text}</p>
+      </div>
+      <div class="mv__item" data-reveal data-reveal-delay="1">
+        <p class="kicker"><span class="kicker__rule" aria-hidden="true"></span>{a.vision.kicker}</p>
+        <p class="mv__text">{a.vision.text}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="section" id="team" aria-labelledby="team-title">
+    <div class="container">
+      <SectionHeading kicker={a.team.kicker} title={a.team.title} id="team-title" />
+      <h3 class="team__group">{a.team.founders}</h3>
+      <div class="team__founders">
+        {founders.map((p) => <TeamCard person={p} lang={lang} size="lg" />)}
+      </div>
+      <h3 class="team__group">{a.team.members}</h3>
+      <div class="team__grid">
+        {members.map((p) => <TeamCard person={p} lang={lang} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Scientific roots -->
+  <section class="section section--dark roots" aria-labelledby="roots">
+    <div class="container grid-2">
+      <div class="stack" style="--stack: 1.5rem">
+        <SectionHeading kicker={a.roots.kicker} title={a.roots.title} id="roots" />
+        <p class="lede" data-reveal>{a.roots.text}</p>
+        <dl class="roots__facts" data-reveal>
+          {a.roots.facts.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}
+        </dl>
+      </div>
+      <div class="roots__logo" data-reveal>
+        <Image src={logo} alt="RNOVA Therapeutics" widths={[480, 720, 1000]} sizes="(min-width: 900px) 520px, 90vw" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <PartnershipCTA lang={lang} />
+</BaseLayout>
+
+<style>
+  .story { list-style: none; display: grid; gap: 16px; margin-top: clamp(36px, 4vw, 56px); counter-reset: s; }
+  @media (min-width: 760px) { .story { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .story { grid-template-columns: repeat(5, 1fr); } }
+  .story__step { position: relative; padding: 24px 20px 22px; border-top: 2px solid var(--line); display: grid; gap: 10px; align-content: start; }
+  .story__step::before { content: ''; position: absolute; top: -2px; left: 0; width: 40%; height: 2px; background: var(--grad-cool); }
+  .story__step:last-child::before { width: 100%; background: var(--grad-brand); }
+  .story__n { font-family: var(--font-mono); font-size: 0.8rem; color: var(--violet-600); }
+  .story__h { font-size: 1.08rem; letter-spacing: -0.01em; }
+  .story__step p { color: var(--ink-2); font-size: 0.95rem; }
+
+  .mv { display: grid; gap: 40px; }
+  @media (min-width: 900px) { .mv { grid-template-columns: 1fr 1fr; gap: 64px; } }
+  .mv__item { display: grid; gap: 16px; }
+  .mv__text { font-size: var(--fs-xl); font-weight: 650; letter-spacing: -0.02em; line-height: 1.25; }
+
+  .team__group { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: clamp(40px, 5vw, 64px) 0 24px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .team__founders { display: grid; gap: 40px; }
+  @media (min-width: 1000px) { .team__founders { grid-template-columns: 1fr 1fr; gap: 56px; } }
+  .team__grid { display: grid; gap: 40px 28px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+
+  .roots { overflow: hidden; }
+  .roots__facts { display: grid; gap: 14px; margin: 0; }
+  .roots__facts div { display: grid; gap: 2px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+  .roots__facts dt { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8f97c7; }
+  .roots__facts dd { margin: 0; color: #fff; font-weight: 600; }
+  .roots__logo :global(img) { width: 100%; mix-blend-mode: screen; }
+</style>

@@ -1,0 +1,33 @@
+---
+interface Props {
+  index?: string;
+  kicker: string;
+  title?: string;
+  titleLines?: string[];
+  level?: 'h1' | 'h2';
+  size?: 'display' | 'h2';
+  align?: 'left' | 'center';
+  id?: string;
+}
+const { index, kicker, title, titleLines, level = 'h2', size = 'h2', align = 'left', id } = Astro.props;
+const Tag = level;
+---
+<header class:list={['sh', `sh--${align}`]} data-reveal>
+  <p class="kicker">
+    {index && <span class="kicker__index">{index}</span>}
+    {index && <span class="kicker__rule" aria-hidden="true"></span>}
+    <span>{kicker}</span>
+  </p>
+  {(title || titleLines) && (
+    <Tag class={size === 'display' ? 'display' : 'h2'} id={id}>
+      {titleLines ? titleLines.map((line, i) => <span class:list={['sh__line', { 'gradient-text': i === titleLines.length - 1 }]}>{line}</span>) : title}
+    </Tag>
+  )}
+  <slot />
+</header>
+
+<style>
+  .sh { display: grid; gap: 18px; max-width: 880px; }
+  .sh--center { margin-inline: auto; text-align: center; justify-items: center; }
+  .sh__line { display: block; }
+</style>

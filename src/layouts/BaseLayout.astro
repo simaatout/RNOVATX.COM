@@ -1,0 +1,88 @@
+---
+import '@fontsource-variable/manrope';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { t, href, asset, languages, type RouteKey } from '../i18n';
+import { site, type Lang } from '../data/site';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+  title: string;
+  description: string;
+  overDarkHeader?: boolean;
+}
+const { lang, route, title, description, overDarkHeader = false } = Astro.props;
+const d = t(lang);
+const siteUrl = Astro.site ?? new URL('https://simaatout.github.io');
+const abs = (path: string) => new URL(path, siteUrl).href;
+const canonical = abs(href(route, lang));
+const ogImage = abs(asset('og-image.png'));
+const locale = lang === 'fr' ? 'fr_CA' : 'en_CA';
+
+// Organization JSON-LD — verified facts only (no address, phone, founding date or social accounts).
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  url: abs(href('home', 'en')),
+  logo: ogImage,
+  email: site.email,
+  description: t('en').meta.home.description,
+  areaServed: 'Worldwide',
+  address: { '@type': 'PostalAddress', addressLocality: 'Québec', addressRegion: 'QC', addressCountry: 'CA' },
+  knowsAbout: ['RNA therapeutics', 'Antisense oligonucleotides', 'SRSF3', 'Microglia', 'Innate immunity', 'Amyotrophic lateral sclerosis', 'Neurodegenerative disease'],
+};
+---
+<!doctype html>
+<html lang={lang} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {languages.map((l) => <link rel="alternate" hreflang={l === 'fr' ? 'fr-CA' : 'en'} href={abs(href(route, l))} />)}
+    <link rel="alternate" hreflang="x-default" href={abs(href(route, 'en'))} />
+    <link rel="icon" href={asset('favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={asset('apple-touch-icon.png')} />
+    <meta name="theme-color" content="#081040" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="RNOVA Tx" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="RNOVA Tx — REPROGRAMMING INNATE IMMUNITY TO SILENCE CNS DISEASES" />
+    <meta property="og:locale" content={locale} />
+    <meta property="og:locale:alternate" content={lang === 'fr' ? 'en_CA' : 'fr_CA'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {route === 'home' && <script type="application/ld+json" set:html={JSON.stringify(orgLd)} />}
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{d.nav.skip}</a>
+    <Header lang={lang} route={route} overDark={overDarkHeader} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} route={route} />
+    <script>
+      import '../scripts/site.ts';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  main { display: block; }
+  main:focus { outline: none; }
+</style>

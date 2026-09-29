@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ArrowLink from '../components/ArrowLink.astro';
+import PartnershipCTA from '../components/PartnershipCTA.astro';
+import { foundationalPatent as fp } from '../data/patents';
+import { t, l } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const p = d.patent;
+// TODO_IP_LICENSE_STATUS_CONFIRM — relationship wording is neutral until the licence status is confirmed (see src/data/patents.ts).
+---
+<BaseLayout lang={lang} route="patent" title={d.meta.patent.title} description={d.meta.patent.description}>
+  <PageHero kicker={p.hero.kicker} title={p.hero.title} lede={p.hero.lede} />
+
+  <section class="section" aria-labelledby="patent-number">
+    <div class="container">
+      <article class="patent" data-reveal>
+        <div class="patent__head">
+          <div class="patent__seal" aria-hidden="true">
+            <svg viewBox="0 0 80 80"><defs><linearGradient id="seal-g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#1e61ed" /><stop offset="1" stop-color="#7e1bf1" /></linearGradient></defs><circle cx="40" cy="40" r="36" fill="none" stroke="url(#seal-g)" stroke-width="3" /><circle cx="40" cy="40" r="28" fill="none" stroke="url(#seal-g)" stroke-width="1" stroke-dasharray="2 4" /><path d="M26 42c6-10 10-10 14 0s8 10 14 0" stroke="url(#seal-g)" stroke-width="3" fill="none" stroke-linecap="round" /></svg>
+          </div>
+          <div>
+            <p class="kicker">{p.patentLabel}</p>
+            <h2 class="patent__num" id="patent-number">{fp.number}</h2>
+            <p class="patent__issued">{p.issued} {fp.issued[lang]}</p>
+          </div>
+        </div>
+        <div class="patent__title">
+          <p class="patent__label">{p.titleLabel}</p>
+          <p class="patent__official" lang="en">{fp.title.toUpperCase()}</p>
+        </div>
+
+        <div class="patent__grid">
+          <div class="patent__block">
+            <h3 class="patent__label">{p.covers}</h3>
+            <ul class="patent__covers">{fp.covers[lang].map((c) => <li>{c}</li>)}</ul>
+            <p class="small muted">{p.coversNote}</p>
+          </div>
+          <dl class="patent__meta">
+            <div><dt>{p.inventors}</dt><dd>{fp.inventors.join(' · ')}</dd></div>
+            <div><dt>{p.assignee}</dt><dd>{fp.assignee}</dd></div>
+            <div><dt>{p.application}</dt><dd>{fp.application}</dd></div>
+            <div><dt>{p.pct}</dt><dd>{lang === 'fr' ? fp.pctFr : fp.pct}</dd></div>
+            <div><dt>{p.priority}</dt><dd>{fp.priority[lang]}</dd></div>
+            <div><dt>{p.claims}</dt><dd>{fp.claims}</dd></div>
+          </dl>
+        </div>
+
+        <div class="patent__links">
+          <ArrowLink href={fp.officialUrl} external lang={lang}>{p.official}</ArrowLink>
+          <ArrowLink href={fp.usptoUrl} external lang={lang}>{p.uspto}</ArrowLink>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section section--soft" aria-labelledby="family">
+    <div class="container grid-2 grid-2--wide-right">
+      <div class="stack" style="--stack: 1rem">
+        <p class="kicker" data-reveal><span class="kicker__rule" aria-hidden="true"></span>{p.patentLabel}</p>
+        <h2 class="h2" id="family" data-reveal>{p.family}</h2>
+        <p class="muted small" data-reveal>{p.familyNote}</p>
+      </div>
+      <div class="fam-wrap" data-reveal>
+        <table class="fam">
+          <thead><tr><th scope="col">{p.jurisdiction}</th><th scope="col">{p.number}</th><th scope="col">{p.status}</th></tr></thead>
+          <tbody>
+            {fp.family.map((f) => (
+              <tr><th scope="row">{l(f.jurisdiction, lang)}</th><td class="mono">{f.number}</td><td>{l(f.note, lang)}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="relationship">
+    <div class="container container--narrow stack" style="--stack: 1.25rem">
+      <p class="kicker" data-reveal><span class="kicker__rule" aria-hidden="true"></span>{p.hero.kicker}</p>
+      <h2 class="h2" id="relationship" data-reveal>{p.relationship}</h2>
+      <p class="lede" data-reveal>{fp.relationship[lang]}</p>
+    </div>
+  </section>
+
+  <PartnershipCTA lang={lang} />
+</BaseLayout>
+
+<style>
+  .patent { border: 1px solid var(--line); border-radius: var(--radius-lg); background: #fff; overflow: hidden; box-shadow: var(--shadow-md); }
+  .patent > * { padding-inline: clamp(22px, 4vw, 48px); }
+  .patent__head { display: flex; gap: 24px; align-items: center; padding-block: clamp(24px, 4vw, 40px); background: linear-gradient(120deg, #f4f6ff, #f8f1ff); border-bottom: 1px solid var(--line); }
+  .patent__seal svg { width: 72px; height: 72px; }
+  .patent__num { font-size: var(--fs-2xl); letter-spacing: -0.02em; margin-top: 6px; }
+  .patent__issued { color: var(--muted); margin-top: 4px; }
+  .patent__title { padding-block: 24px; border-bottom: 1px solid var(--line); }
+  .patent__label { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .patent__official { font-weight: 700; font-size: 1.05rem; line-height: 1.45; letter-spacing: 0.01em; }
+  .patent__grid { display: grid; gap: 32px; padding-block: 28px; }
+  @media (min-width: 900px) { .patent__grid { grid-template-columns: 1.3fr 1fr; gap: 56px; } }
+  .patent__block { display: grid; gap: 12px; align-content: start; }
+  .patent__covers { list-style: none; display: grid; gap: 12px; }
+  .patent__covers li { position: relative; padding-left: 22px; color: var(--ink-2); }
+  .patent__covers li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 8px; height: 8px; border-radius: 50%; background: var(--grad-cool); }
+  .patent__meta { display: grid; gap: 0; margin: 0; align-content: start; }
+  .patent__meta div { display: grid; gap: 2px; padding-block: 12px; border-bottom: 1px solid var(--line); }
+  .patent__meta div:first-child { padding-top: 0; }
+  .patent__meta dt { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .patent__meta dd { margin: 0; font-weight: 600; }
+  .patent__links { display: flex; flex-wrap: wrap; gap: 12px 28px; padding-block: 20px 28px; border-top: 1px solid var(--line); background: var(--bg-soft); }
+  .fam-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-lg); background: #fff; }
+  .fam { min-width: 440px; }
+  .fam th, .fam td { text-align: left; padding: 14px 20px; border-bottom: 1px solid var(--line); font-size: 0.95rem; }
+  .fam thead th { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--bg-soft); }
+  .fam tbody tr:last-child > * { border-bottom: 0; }
+  .fam tbody th { font-weight: 650; }
+</style>

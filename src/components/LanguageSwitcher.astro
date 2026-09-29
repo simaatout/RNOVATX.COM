@@ -1,0 +1,27 @@
+---
+import { t, href, otherLang, type RouteKey } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang; route: RouteKey; variant?: 'compact' | 'full' }
+const { lang, route, variant = 'compact' } = Astro.props;
+const d = t(lang);
+const target = otherLang(lang);
+---
+<div class:list={['lang', `lang--${variant}`]}>
+  <span class="lang__item is-current" aria-current="true">
+    <span class="sr-only">{d.langName}: </span>{lang.toUpperCase()}
+  </span>
+  <span class="lang__sep" aria-hidden="true">|</span>
+  <a class="lang__item" href={href(route, target)} hreflang={target} lang={target} data-lang-switch>
+    {variant === 'full' ? d.nav.switchTo : <><span aria-hidden="true">{target.toUpperCase()}</span><span class="sr-only">{d.nav.switchTo}</span></>}
+  </a>
+</div>
+
+<style>
+  .lang { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; }
+  .lang__item { color: inherit; text-decoration: none; padding: 8px 4px; opacity: 0.6; }
+  .lang__item.is-current { opacity: 1; }
+  a.lang__item:hover { opacity: 1; color: inherit; text-decoration: underline; }
+  .lang__sep { opacity: 0.35; }
+  .lang--full { font-family: var(--font-sans); font-size: 1rem; letter-spacing: 0; }
+</style>

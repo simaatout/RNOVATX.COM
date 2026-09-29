@@ -1,0 +1,349 @@
+---
+import CTAButton from './CTAButton.astro';
+import { t, href } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const h = d.home.hero;
+
+/* ---- Geometry for the molecular scene (viewBox 0 0 800 520) ---- */
+const RX = 470; // where the strand enters the ribosome
+const RY = 262;
+const strandY = (x: number) => {
+  const k = Math.max(0, 1 - x / RX);
+  return RY + 58 * Math.pow(k, 0.85) * Math.sin((x / RX) * Math.PI * 2.6 + 0.5);
+};
+const strandPts: string[] = [];
+for (let x = -10; x <= RX + 70; x += 6) strandPts.push(`${x.toFixed(0)} ${strandY(Math.min(x, RX)).toFixed(1)}`);
+const strandD = `M${strandPts.join(' L')}`;
+const ticks = Array.from({ length: 15 }, (_, i) => {
+  const x = 24 + i * 24;
+  const y = strandY(x);
+  const slope = strandY(x + 1) - strandY(x - 1);
+  const dir = i % 2 === 0 ? -1 : 1;
+  return { x, y, len: 12 + (i % 3) * 3, dir, fade: 1 - i / 22, slope };
+});
+const beads = Array.from({ length: 8 }, (_, i) => ({
+  x: 600 + i * 27,
+  y: 204 - i * 11 + Math.sin(i * 1.1) * 10,
+  r: 15 - i * 0.9,
+  fill: ['#1e61ed', '#b02ef0', '#3a3dfc', '#fe8be4'][i % 4],
+}));
+---
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <p class="kicker hero__eyebrow"><span class="kicker__rule" aria-hidden="true"></span>{h.eyebrow}</p>
+      <h1 class="hero__title" id="hero-title">
+        <span class="hero__line">{d.taglineLines[0]}</span>
+        <span class="hero__line hero__line--accent">{d.taglineLines[1]}</span>
+      </h1>
+      <p class="hero__lede">{h.lede}</p>
+      <div class="btn-row">
+        <CTAButton href={href('science', lang)} variant="light">{d.common.exploreScience}</CTAButton>
+        <CTAButton href={href('contact', lang)} variant="ghost-light">{d.common.partner}</CTAButton>
+      </div>
+    </div>
+
+    <figure class="hero__visual" data-state="0">
+      <svg class="mol" viewBox="0 0 800 520" role="img" aria-labelledby="mol-title mol-desc" data-mol>
+        <title id="mol-title">{h.diagramTitle}</title>
+        <desc id="mol-desc">{h.diagramDesc}</desc>
+        <defs>
+          <linearGradient id="mol-strand" x1="0" x2="1">
+            <stop offset="0" stop-color="#1e61ed" stop-opacity="0.15" />
+            <stop offset="0.35" stop-color="#2f5cf0" />
+            <stop offset="0.8" stop-color="#7e1bf1" />
+            <stop offset="1" stop-color="#c02efd" />
+          </linearGradient>
+          <radialGradient id="mol-sub-a" cx="0.35" cy="0.3" r="0.9">
+            <stop offset="0" stop-color="#e8ecff" />
+            <stop offset="0.45" stop-color="#9fb4ff" />
+            <stop offset="1" stop-color="#6c3cf0" />
+          </radialGradient>
+          <radialGradient id="mol-sub-b" cx="0.4" cy="0.25" r="0.95">
+            <stop offset="0" stop-color="#dfe6ff" />
+            <stop offset="0.5" stop-color="#8ea6fb" />
+            <stop offset="1" stop-color="#5a2de0" />
+          </radialGradient>
+          <radialGradient id="mol-glow">
+            <stop offset="0" stop-color="#8b6cff" stop-opacity="0.75" />
+            <stop offset="0.5" stop-color="#5a3cf0" stop-opacity="0.22" />
+            <stop offset="1" stop-color="#3a3dfc" stop-opacity="0" />
+          </radialGradient>
+          <radialGradient id="mol-brake">
+            <stop offset="0" stop-color="#ffd1f4" />
+            <stop offset="0.5" stop-color="#e04fd8" />
+            <stop offset="1" stop-color="#9b1fd0" />
+          </radialGradient>
+          <linearGradient id="mol-aso" x1="0" x2="1">
+            <stop offset="0" stop-color="#8dafFD" />
+            <stop offset="1" stop-color="#e8ecff" />
+          </linearGradient>
+          <filter id="mol-soft" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" />
+          </filter>
+        </defs>
+
+        <g class="layer layer--back" data-depth="6">
+          <circle class="mol__glow" cx="495" cy="250" r="190" fill="url(#mol-glow)" />
+          <g class="mol__rings" fill="none" stroke="#6f7bff" stroke-opacity="0.16">
+            <circle cx="495" cy="250" r="150" />
+            <circle cx="495" cy="250" r="222" stroke-dasharray="2 10" />
+          </g>
+        </g>
+
+        <g class="layer layer--mid" data-depth="12">
+          <!-- mRNA strand -->
+          <path class="mol__strand" d={strandD} stroke="url(#mol-strand)" stroke-width="5" fill="none" stroke-linecap="round" />
+          <path class="mol__flow" d={strandD} stroke="#e9ecff" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="1 30" />
+          <g class="mol__ticks" stroke-linecap="round" stroke-width="5">
+            {ticks.map((tk) => (
+              <path d={`M${tk.x} ${(tk.y + tk.dir * 6).toFixed(1)} v${(tk.dir * tk.len).toFixed(0)}`} stroke={tk.dir < 0 ? '#3a5cf5' : '#8b3cf0'} opacity={tk.fade.toFixed(2)} />
+            ))}
+          </g>
+
+          <!-- Ribosome: small subunit (below) and large subunit (above), after the logo -->
+          <g class="mol__ribosome">
+            <path d="M404 292 C 414 266, 466 262, 518 266 C 570 270, 598 292, 590 324 C 580 362, 524 376, 472 366 C 424 356, 394 322, 404 292 Z" fill="url(#mol-sub-b)" />
+            <path d="M392 226 C 376 160, 448 118, 522 126 C 594 134, 616 190, 580 224 C 552 250, 506 236, 470 244 C 430 254, 400 254, 392 226 Z" fill="url(#mol-sub-a)" />
+            <path d="M420 190 C 450 150, 520 140, 560 170" stroke="#ffffff" stroke-opacity="0.55" stroke-width="3" fill="none" stroke-linecap="round" />
+            <path d="M430 312 C 460 330, 520 336, 560 318" stroke="#ffffff" stroke-opacity="0.3" stroke-width="3" fill="none" stroke-linecap="round" />
+          </g>
+
+          <!-- Antisense strand that approaches the regulatory node -->
+          <g class="mol__aso" data-aso>
+            <path d="M-34 0 C -20 -8, -8 8, 6 0 S 26 -8, 34 0" stroke="url(#mol-aso)" stroke-width="5" fill="none" stroke-linecap="round" />
+            <circle cx="-34" cy="0" r="4" fill="#8dafFD" />
+          </g>
+
+          <!-- SRSF3 regulatory "brake" -->
+          <g class="mol__brake" data-brake transform="translate(408 262)">
+            <circle r="30" fill="#e04fd8" opacity="0.35" filter="url(#mol-soft)" class="mol__brake-halo" />
+            <path d="M-20 -18 Q 0 -30 20 -18" stroke="#ff9ff0" stroke-width="4" fill="none" stroke-linecap="round" class="mol__clamp" />
+            <path d="M-20 18 Q 0 30 20 18" stroke="#ff9ff0" stroke-width="4" fill="none" stroke-linecap="round" class="mol__clamp" />
+            <circle r="14" fill="url(#mol-brake)" />
+            <circle r="14" fill="none" stroke="#ffe3f9" stroke-opacity="0.7" stroke-width="1.5" />
+          </g>
+        </g>
+
+        <g class="layer layer--front" data-depth="20">
+          <path class="mol__tether" d="M576 214 C 584 210, 590 206, 600 204" stroke="#7e1bf1" stroke-width="3" fill="none" />
+          <path class="mol__chain" d={`M${beads.map((b) => `${b.x} ${b.y.toFixed(1)}`).join(' L')}`} stroke="#9c6bff" stroke-opacity="0.7" stroke-width="3" fill="none" data-chain />
+          {beads.map((b, i) => (
+            <g class="mol__bead" data-bead={i} transform={`translate(${b.x} ${b.y.toFixed(1)})`}>
+              <circle r={b.r.toFixed(1)} fill={b.fill} />
+              <circle r={(b.r * 0.42).toFixed(1)} cx={(-b.r * 0.3).toFixed(1)} cy={(-b.r * 0.32).toFixed(1)} fill="#ffffff" opacity="0.45" />
+            </g>
+          ))}
+        </g>
+
+        <g class="mol__labels" aria-hidden="true">
+          <text x="18" y="172">{h.labels.rna}</text>
+          <text x="600" y="104" class="mol__label-rib">{h.labels.ribosome}</text>
+          <path d="M598 110 L 566 150" stroke="#aeb6e0" stroke-opacity="0.5" />
+          <g class="mol__label-brake"><text x="318" y="334">{h.labels.srsf3}</text><path d="M366 326 L 396 284" stroke="#ff9ff0" stroke-opacity="0.6" /></g>
+          <text x="646" y="50" class="mol__label-protein">{h.labels.protein}</text>
+        </g>
+      </svg>
+
+      <figcaption class="hero__states">
+        <div class="states" role="group" aria-label={h.diagramTitle}>
+          {h.states.map((s, i) => (
+            <button type="button" class="states__btn" data-state-btn={i} aria-pressed={i === 0 ? 'true' : 'false'}>
+              <span class="states__dot" aria-hidden="true"></span>{s}
+            </button>
+          ))}
+        </div>
+        <p class="hero__note">{d.common.conceptual}</p>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) {
+    const fig = hero.querySelector<HTMLElement>('.hero__visual')!;
+    const svg = hero.querySelector<SVGSVGElement>('[data-mol]')!;
+    const brake = svg.querySelector<SVGGElement>('[data-brake]')!;
+    const aso = svg.querySelector<SVGGElement>('[data-aso]')!;
+    const beads = Array.from(svg.querySelectorAll<SVGGElement>('[data-bead]'));
+    const chain = svg.querySelector<SVGPathElement>('[data-chain]')!;
+    const layers = Array.from(svg.querySelectorAll<SVGGElement>('[data-depth]'));
+    const btns = Array.from(hero.querySelectorAll<HTMLButtonElement>('[data-state-btn]'));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+    const smooth = (a: number, b: number, v: number) => { const x = clamp((v - a) / (b - a)); return x * x * (3 - 2 * x); };
+    const chainLen = chain.getTotalLength();
+    chain.style.strokeDasharray = `${chainLen}`;
+
+    let target = 0, current = reduce ? 1 : 0, scrollP = 0, pointerP = 0, manual: number | null = null;
+    let px = 0, py = 0, cpx = 0, cpy = 0, raf = 0;
+
+    const render = (p: number) => {
+      // 1 → 2: antisense approaches and engages the regulatory node
+      const approach = smooth(0.12, 0.45, p);
+      const release = smooth(0.42, 0.66, p);
+      aso.setAttribute('transform', `translate(${(330 + 78 * approach).toFixed(1)} ${(400 - 138 * approach).toFixed(1)}) rotate(${(-28 + 28 * approach).toFixed(1)})`);
+      aso.style.opacity = String((0.15 + 0.85 * smooth(0.05, 0.3, p)) * (1 - release));
+      brake.style.opacity = String(1 - release * 0.92);
+      brake.setAttribute('transform', `translate(${(408 - 26 * release).toFixed(1)} ${(262 + 46 * release).toFixed(1)}) scale(${(1 - 0.35 * release).toFixed(3)})`);
+      // 2 → 3: translation resumes, peptide emerges
+      const translate = smooth(0.58, 1, p);
+      svg.style.setProperty('--glow', (0.35 + 0.65 * translate).toFixed(3));
+      svg.style.setProperty('--flow', (0.2 + 0.8 * release).toFixed(3));
+      chain.style.strokeDashoffset = String(chainLen * (1 - translate));
+      beads.forEach((b, i) => {
+        const v = smooth(0.58 + i * 0.045, 0.66 + i * 0.045, p);
+        b.style.opacity = v.toFixed(3);
+        b.style.setProperty('--s', (0.4 + 0.6 * v).toFixed(3));
+      });
+      const state = p < 0.34 ? 0 : p < 0.7 ? 1 : 2;
+      if (fig.dataset.state !== String(state)) {
+        fig.dataset.state = String(state);
+        btns.forEach((b, i) => b.setAttribute('aria-pressed', String(i === state)));
+      }
+    };
+
+    const tick = () => {
+      target = manual !== null ? Math.max(manual, scrollP) : Math.max(scrollP, pointerP);
+      current += (target - current) * 0.08;
+      cpx += (px - cpx) * 0.06; cpy += (py - cpy) * 0.06;
+      render(current);
+      if (fine && !reduce) layers.forEach((l) => {
+        const depth = Number(l.dataset.depth);
+        l.setAttribute('transform', `translate(${(cpx * depth).toFixed(2)} ${(cpy * depth).toFixed(2)})`);
+      });
+      if (Math.abs(target - current) > 0.001 || Math.abs(px - cpx) > 0.001 || Math.abs(py - cpy) > 0.001) raf = requestAnimationFrame(tick);
+      else raf = 0;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+
+    if (reduce) {
+      render(1);
+      btns.forEach((b, i) => b.addEventListener('click', () => { render([0, 0.5, 1][i]); }));
+    } else {
+      render(0);
+      const onScroll = () => {
+        const r = hero.getBoundingClientRect();
+        scrollP = clamp(-r.top / (r.height * 0.55));
+        kick();
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      if (fine) {
+        hero.addEventListener('pointermove', (e) => {
+          const r = svg.getBoundingClientRect();
+          // Moving across the molecule (left → right) advances translation.
+          pointerP = Math.max(pointerP, clamp((e.clientX - r.left) / r.width * 1.15 - 0.1));
+          const hr = hero.getBoundingClientRect();
+          px = ((e.clientX - hr.left) / hr.width - 0.5) * 0.6;
+          py = ((e.clientY - hr.top) / hr.height - 0.5) * 0.6;
+          kick();
+        });
+        hero.addEventListener('pointerleave', () => { px = 0; py = 0; kick(); });
+      }
+      btns.forEach((b, i) => b.addEventListener('click', () => {
+        manual = [0, 0.52, 1][i];
+        pointerP = manual;
+        kick();
+      }));
+    }
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative; overflow: hidden; color: #e4e8ff;
+    padding: calc(var(--header-h) + clamp(40px, 6vw, 88px)) 0 clamp(48px, 6vw, 80px);
+    min-height: min(100svh, 980px);
+    display: flex; align-items: center;
+    background: var(--navy-950);
+  }
+  .hero__bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(55% 60% at 72% 42%, rgba(88, 60, 240, 0.42), transparent 70%),
+      radial-gradient(40% 50% at 95% 90%, rgba(192, 46, 253, 0.18), transparent 70%),
+      radial-gradient(50% 60% at 5% 10%, rgba(30, 97, 237, 0.22), transparent 70%),
+      linear-gradient(180deg, #040925 0%, #070f3c 100%);
+  }
+  .hero__bg::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(70% 70% at 60% 40%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(70% 70% at 60% 40%, #000 30%, transparent 80%);
+  }
+  .hero__grid { position: relative; display: grid; gap: clamp(28px, 4vw, 48px); align-items: center; }
+  @media (min-width: 1000px) { .hero__grid { grid-template-columns: 0.95fr 1.05fr; } }
+  .hero__copy { display: grid; gap: 24px; align-content: start; }
+  .hero__eyebrow { color: #c9b6ff; }
+  .hero__title {
+    color: #fff; font-weight: 780; letter-spacing: -0.028em; line-height: 1.02;
+    font-size: clamp(2.1rem, 1.3rem + 3.5vw, 4.1rem);
+  }
+  .hero__line { display: block; }
+  .hero__line--accent {
+    background: linear-gradient(90deg, #9fb4ff 0%, #b69bff 45%, #f3a8ec 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero__lede { font-size: var(--fs-md); color: #c9cff2; max-width: 52ch; line-height: 1.6; }
+
+  .hero__visual { margin: 0; position: relative; }
+  .mol { width: 100%; height: auto; overflow: visible; --glow: 0.35; --flow: 0.2; }
+  .mol__glow { opacity: var(--glow); transition: opacity 0.2s linear; }
+  .mol__ribosome { filter: drop-shadow(0 0 22px rgba(140, 120, 255, calc(var(--glow) * 0.8))); }
+  .mol__flow { opacity: var(--flow); }
+  .mol__bead { opacity: 0; transform-box: fill-box; }
+  .mol__bead circle:first-child { transform: scale(var(--s, 0.4)); transform-box: fill-box; transform-origin: center; }
+  .mol__chain { stroke-dashoffset: 9999; }
+  .mol__labels text { fill: #c3caf0; font-family: var(--font-mono); font-size: 17px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .mol__label-brake text { fill: #ffb6f3; }
+  [data-state='2'] .mol__label-brake { opacity: 0.25; }
+  .mol__labels, .mol__label-brake { transition: opacity 0.4s var(--ease); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mol__flow { animation: mol-flow 2.4s linear infinite; }
+    .mol__brake-halo { animation: mol-pulse 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .mol__rings { animation: mol-spin 60s linear infinite; transform-origin: 495px 250px; }
+    @keyframes mol-flow { to { stroke-dashoffset: -62; } }
+    @keyframes mol-pulse { 50% { opacity: 0.6; transform: scale(1.2); } }
+    @keyframes mol-spin { to { transform: rotate(360deg); } }
+  }
+
+  .hero__states { margin-top: 12px; display: grid; gap: 10px; justify-items: start; }
+  .states {
+    display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 999px; background: rgba(8, 16, 64, 0.55);
+  }
+  .states__btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 14px;
+    border: 0; border-radius: 999px; background: transparent; color: #b8c0ea; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
+  }
+  .states__btn:hover { color: #fff; }
+  .states__btn[aria-pressed='true'] { background: rgba(255, 255, 255, 0.12); color: #fff; }
+  .states__dot { width: 8px; height: 8px; border-radius: 50%; background: #5b6399; transition: background-color 0.3s; }
+  .states__btn[data-state-btn='0'][aria-pressed='true'] .states__dot { background: #e04fd8; box-shadow: 0 0 10px #e04fd8; }
+  .states__btn[data-state-btn='1'][aria-pressed='true'] .states__dot { background: #8dafFD; box-shadow: 0 0 10px #8dafFD; }
+  .states__btn[data-state-btn='2'][aria-pressed='true'] .states__dot { background: #b69bff; box-shadow: 0 0 10px #b69bff; }
+  .hero__note { font-size: 0.78rem; color: #8f97c7; }
+
+  @media (max-width: 999px) {
+    .hero { min-height: auto; }
+    .hero__visual { margin-inline: -8px; }
+  }
+  @media (max-width: 640px) {
+    .mol__labels { display: none; }
+    .states { border-radius: 16px; }
+    .states__btn { font-size: 0.66rem; padding: 8px 10px; }
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+/**
+ * Technology pillar card. The EAT-ME variant is intentionally abstract:
+ * it shows "selective recognition" without depicting any architecture,
+ * ligand, linker or conjugation chemistry.
+ */
+interface Props {
+  tag: string;
+  name: string;
+  text: string;
+  bullets: string[];
+  variant: 'aso' | 'targeted';
+}
+const { tag, name, text, bullets, variant } = Astro.props;
+const orbit = [0, 1, 2, 3, 4].map((i) => { const a = (i * Math.PI * 2) / 5; return { x: 180 + Math.cos(a) * 50, y: 72 + Math.sin(a) * 50, fill: i % 2 ? '#3a3dfc' : '#c02efd' }; });
+const asoTicks = [30, 54, 78, 102, 126, 150, 174, 198, 222].map((x, i) => `M${x} ${70 - Math.sin(((x - 10) * Math.PI) / 120) * 30} v${i % 2 ? 10 : -10}`);
+---
+<article class:list={['tech', `tech--${variant}`]} data-reveal>
+  <div class="tech__art" aria-hidden="true">
+    {variant === 'aso' ? (
+      <svg viewBox="0 0 320 140">
+        <defs><linearGradient id="tech-a" x1="0" x2="1"><stop offset="0" stop-color="#1e61ed" /><stop offset="1" stop-color="#7e1bf1" /></linearGradient></defs>
+        <path d="M10 70 C 50 30, 90 30, 130 70 S 210 110, 250 70 S 300 40, 312 56" stroke="#c8cee3" stroke-width="4" fill="none" stroke-linecap="round" />
+        <g stroke="#c8cee3" stroke-width="3" stroke-linecap="round">
+          {asoTicks.map((p) => <path d={p} />)}
+        </g>
+        <path class="tech__aso" d="M120 92 C 150 116, 190 116, 220 92" stroke="url(#tech-a)" stroke-width="6" fill="none" stroke-linecap="round" />
+        <circle cx="118" cy="92" r="9" fill="#7e1bf1" />
+        <text x="232" y="126" font-family="IBM Plex Mono, monospace" font-size="12" fill="#545d80" letter-spacing="1">SRSF3 mRNA</text>
+      </svg>
+    ) : (
+      <svg viewBox="0 0 320 140">
+        <defs>
+          <radialGradient id="tech-cell" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#f3eaff" /><stop offset="1" stop-color="#b58cff" /></radialGradient>
+          <radialGradient id="tech-halo"><stop offset="0" stop-color="#c02efd" stop-opacity="0.35" /><stop offset="1" stop-color="#c02efd" stop-opacity="0" /></radialGradient>
+        </defs>
+        <circle cx="70" cy="44" r="16" fill="#e4e8f5" /><circle cx="46" cy="104" r="12" fill="#e4e8f5" /><circle cx="270" cy="30" r="12" fill="#e4e8f5" /><circle cx="286" cy="110" r="14" fill="#e4e8f5" />
+        <circle cx="180" cy="72" r="64" fill="url(#tech-halo)" class="tech__halo" />
+        <circle cx="180" cy="72" r="36" fill="url(#tech-cell)" />
+        <g class="tech__orbit">
+          {orbit.map((p) => <circle cx={p.x} cy={p.y} r="5" fill={p.fill} />)}
+        </g>
+      </svg>
+    )}
+  </div>
+  <p class:list={['tag', variant === 'aso' ? 'tag--brand' : 'tag--violet']}>{tag}</p>
+  <h3 class="tech__name">{name}</h3>
+  <p class="tech__text">{text}</p>
+  <ul class="tech__list">
+    {bullets.map((b) => <li>{b}</li>)}
+  </ul>
+</article>
+
+<style>
+  .tech {
+    position: relative; display: grid; gap: 14px; align-content: start;
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); padding: clamp(24px, 3vw, 36px);
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .tech:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .tech--targeted { background: linear-gradient(160deg, #ffffff 40%, #f6f0ff 100%); border-color: #e4d9fb; }
+  .tech__art { height: 140px; margin: -6px -6px 6px; border-radius: 14px; background: var(--bg-soft); display: grid; place-items: center; overflow: hidden; }
+  .tech--targeted .tech__art { background: #f3edff; }
+  .tech__art svg { width: 100%; height: 100%; }
+  .tech .tag { justify-self: start; }
+  .tech__name { font-size: var(--fs-xl); letter-spacing: -0.02em; }
+  .tech__text { color: var(--ink-2); }
+  .tech__list { list-style: none; display: grid; gap: 8px; margin-top: 4px; }
+  .tech__list li { display: flex; gap: 10px; align-items: baseline; font-size: 0.92rem; color: var(--ink-2); }
+  .tech__list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--grad-cool); flex: none; transform: translateY(-2px); }
+  @media (prefers-reduced-motion: no-preference) {
+    .tech__orbit { transform-origin: 180px 72px; animation: tech-spin 24s linear infinite; }
+    .tech__halo { transform-origin: 180px 72px; animation: tech-breathe 4s ease-in-out infinite; }
+    @keyframes tech-spin { to { transform: rotate(360deg); } }
+    @keyframes tech-breathe { 50% { transform: scale(1.08); opacity: 0.8; } }
+  }
+</style>

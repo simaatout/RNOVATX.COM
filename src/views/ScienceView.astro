@@ -1,0 +1,289 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import MicrogliaDiagram from '../components/MicrogliaDiagram.astro';
+import Citation from '../components/Citation.astro';
+import PartnershipCTA from '../components/PartnershipCTA.astro';
+import { t } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const d = t(lang);
+const s = d.science;
+const surveyPaths = Array.from({ length: 10 }, (_, i) => {
+  const a = (i * Math.PI * 2) / 10;
+  const L = 58 + (i % 3) * 10;
+  return `M${150 + Math.cos(a) * 12} ${110 + Math.sin(a) * 12} Q ${150 + Math.cos(a - 0.2) * L * 0.5} ${110 + Math.sin(a - 0.2) * L * 0.5} ${150 + Math.cos(a + 0.15) * L} ${110 + Math.sin(a + 0.15) * L}`;
+});
+const emDots = [0, 1, 2, 3].map((i) => { const a = (i * Math.PI * 2) / 4 + 0.6; return { x: 60 + Math.cos(a) * 42, y: 60 + Math.sin(a) * 42, fill: i % 2 ? '#3a3dfc' : '#c02efd' }; });
+const toc = [s.s1, s.s2, s.s3, s.s4, s.s5, s.s6, s.s7].map((x, i) => ({ id: `s${i + 1}`, index: x.index, title: x.title }));
+const domain = lang === 'fr'
+  ? { rrm: 'RRM — reconnaissance de l’ARN', rs: 'Domaine RS — riche en Ser/Arg (phosphorylation)', n: 'N', c: 'C', caption: 'Organisation schématique d’une protéine SR comme SRSF3.' }
+  : { rrm: 'RRM — RNA recognition', rs: 'RS domain — Ser/Arg-rich (phosphorylation)', n: 'N', c: 'C', caption: 'Schematic domain organization of an SR protein such as SRSF3.' };
+---
+<BaseLayout lang={lang} route="science" title={d.meta.science.title} description={d.meta.science.description}>
+  <PageHero kicker={s.hero.kicker} title={s.hero.title} lede={s.hero.lede} />
+
+  <div class="container sci">
+    <nav class="sci__toc" aria-label={s.toc}>
+      <p class="sci__toc-h">{s.toc}</p>
+      <ol>
+        {toc.map((item) => <li><a href={`#${item.id}`} data-toc-link={item.id}><span>{item.index}</span>{item.title}</a></li>)}
+      </ol>
+    </nav>
+
+    <div class="sci__body">
+      <!-- 01 -->
+      <section class="sci__sec" id="s1" aria-labelledby="s1-h">
+        <header class="sci__head" data-reveal><span class="sci__idx">{s.s1.index}</span><h2 class="h2" id="s1-h">{s.s1.title}</h2></header>
+        <div class="sci__cols">
+          <div class="prose" data-reveal>{s.s1.body.map((p) => <p>{p}</p>)}</div>
+          <figure class="sci__fig sci__fig--survey" data-reveal aria-hidden="true">
+            <svg viewBox="0 0 300 220">
+              <defs><radialGradient id="sv-soma" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#e3e9ff" /><stop offset="1" stop-color="#3a5cf5" /></radialGradient></defs>
+              {[[52, 48], [250, 60], [230, 180], [60, 176]].map(([x, y]) => (
+                <g opacity="0.55"><circle cx={x} cy={y} r="12" fill="#e4e8f5" stroke="#c8cee3" /><path d={`M${x} ${y + 12} v26`} stroke="#c8cee3" stroke-width="3" /></g>
+              ))}
+              <circle cx="150" cy="110" r="96" fill="none" stroke="#3a5cf5" stroke-opacity="0.18" stroke-dasharray="3 6" class="sv-ring" />
+              <g stroke="#3a5cf5" stroke-width="2.4" stroke-linecap="round" fill="none">
+                {surveyPaths.map((p) => <path d={p} />)}
+              </g>
+              <circle cx="150" cy="110" r="15" fill="url(#sv-soma)" />
+            </svg>
+          </figure>
+        </div>
+        <Citation ids={s.s1.cites} lang={lang} />
+      </section>
+
+      <!-- 02 -->
+      <section class="sci__sec" id="s2" aria-labelledby="s2-h">
+        <header class="sci__head" data-reveal><span class="sci__idx">{s.s2.index}</span><h2 class="h2" id="s2-h">{s.s2.title}</h2></header>
+        <div class="prose" data-reveal>{s.s2.body.map((p) => <p>{p}</p>)}</div>
+        <MicrogliaDiagram lang={lang} />
+        <Citation ids={s.s2.cites} lang={lang} />
+      </section>
+
+      <!-- 03 -->
+      <section class="sci__sec" id="s3" aria-labelledby="s3-h">
+        <header class="sci__head" data-reveal><span class="sci__idx">{s.s3.index}</span><h2 class="h2" id="s3-h">{s.s3.title}</h2></header>
+        <div class="prose" data-reveal>{s.s3.body.map((p) => <p>{p}</p>)}</div>
+        <figure class="flow" data-reveal>
+          <ol class="flow__row">
+            {s.s3.flow.map((step, i) => (
+              <li class:list={['flow__node', `flow__node--${i}`]}>
+                <span class="flow__icon" aria-hidden="true">
+                  {i === 0 && <svg viewBox="0 0 48 48"><path d="M10 6c20 8 8 28 28 36M38 6C18 14 30 34 10 42" stroke="#3a5cf5" stroke-width="3" fill="none" stroke-linecap="round" /><path d="M16 14h16M14 24h20M16 34h16" stroke="#9fb4ff" stroke-width="2.5" stroke-linecap="round" /></svg>}
+                  {i === 1 && <svg viewBox="0 0 48 48"><path d="M4 24c6-10 10-10 16 0s10 10 16 0 6-6 8-4" stroke="#5a2cf2" stroke-width="3.5" fill="none" stroke-linecap="round" /></svg>}
+                  {i === 2 && <svg viewBox="0 0 48 48"><path d="M8 20c-2-10 12-14 22-12 10 2 12 10 6 14-5 3-12 0-18 2-6 1-9 0-10-4z" fill="#a9b9ff" /><path d="M10 30c2-5 10-5 18-4 8 1 12 4 10 9-2 6-12 7-18 5-6-2-11-5-10-10z" fill="#7e5cf5" /></svg>}
+                  {i === 3 && <svg viewBox="0 0 48 48">{[0, 1, 2, 3].map((k) => <circle cx={10 + k * 10} cy={30 - k * 5} r={6 - k * 0.6} fill={['#1e61ed', '#b02ef0', '#3a3dfc', '#fe8be4'][k]} />)}</svg>}
+                </span>
+                <span class="flow__label">{step}</span>
+              </li>
+            ))}
+          </ol>
+          <div class="flow__gap">
+            <p class="flow__gap-h">{s.s3.gapTitle}</p>
+            <p>{s.s3.gapText}</p>
+            <div class="flow__bars" aria-hidden="true">
+              <span class="flow__bar flow__bar--mrna"><span>{s.s3.flow[1]}</span></span>
+              <span class="flow__bar flow__bar--protein"><span>{s.s3.flow[3]}</span></span>
+            </div>
+          </div>
+          <figcaption class="small muted">{d.common.conceptual}</figcaption>
+        </figure>
+        <Citation ids={s.s3.cites} lang={lang} />
+      </section>
+
+      <!-- 04 -->
+      <section class="sci__sec" id="s4" aria-labelledby="s4-h">
+        <header class="sci__head" data-reveal><span class="sci__idx">{s.s4.index}</span><h2 class="h2" id="s4-h">{s.s4.title}</h2></header>
+        <div class="sci__cols sci__cols--top">
+          <div class="prose" data-reveal>{s.s4.body.map((p) => <p>{p}</p>)}</div>
+          <aside class="facts" data-reveal>
+            <dl>
+              {s.s4.facts.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}
+            </dl>
+            <figure class="domain">
+              <div class="domain__bar" aria-hidden="true">
+                <span class="domain__end">{domain.n}</span>
+                <span class="domain__rrm"></span>
+                <span class="domain__link"></span>
+                <span class="domain__rs"></span>
+                <span class="domain__end">{domain.c}</span>
+              </div>
+              <ul class="domain__key">
+                <li><span class="domain__sw domain__sw--rrm"></span>{domain.rrm}</li>
+                <li><span class="domain__sw domain__sw--rs"></span>{domain.rs}</li>
+              </ul>
+              <figcaption class="small muted">{domain.caption}</figcaption>
+            </figure>
+          </aside>
+        </div>
+        <Citation ids={s.s4.cites} lang={lang} />
+      </section>
+
+      <!-- 05 -->
+      <section class="sci__sec" id="s5" aria-labelledby="s5-h">
+        <header class="sci__head" data-reveal><span class="sci__idx">{s.s5.index}</span><h2 class="h2" id="s5-h">{s.s5.title}</h2></header>
+        <div class="mech" data-reveal>
+          <div class="mech__col mech__col--disease">
+            <h3 class="mech__h">{s.s5.disease.title}</h3>
+            <ol>{s.s5.disease.steps.map((st) => <li>{st}</li>)}</ol>
+          </div>
+          <div class="mech__col mech__col--concept">
+            <h3 class="mech__h">{s.s5.concept.title}</h3>
+            <ol>{s.s5.concept.steps.map((st) => <li>{st}</li>)}</ol>
+          </div>
+        </div>
+        <p class="mech__note">{s.s5.note}</p>
+        <Citation ids={s.s5.cites} lang={lang} />
+      </section>
+
+      <!-- 06 -->
+      <section class="sci__sec" id="s6" aria-labelledby="s6-h">
+        <header class="sci__head" data-reveal><span class="sci__idx">{s.s6.index}</span><h2 class="h2" id="s6-h">{s.s6.title}</h2></header>
+        <div class="prose" data-reveal>{s.s6.body.map((p) => <p>{p}</p>)}</div>
+        <div class="eatme" data-reveal>
+          <svg class="eatme__art" viewBox="0 0 120 120" aria-hidden="true">
+            <defs><radialGradient id="em-c" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#f3eaff" /><stop offset="1" stop-color="#9b6cff" /></radialGradient></defs>
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#c02efd" stroke-opacity="0.25" stroke-dasharray="3 6" />
+            <circle cx="60" cy="60" r="28" fill="url(#em-c)" />
+            {emDots.map((p) => <circle cx={p.x} cy={p.y} r="5" fill={p.fill} />)}
+          </svg>
+          <div>
+            <p class="tag tag--violet">EAT-ME-SRSF3</p>
+            <p class="eatme__text">{s.s6.eatMe}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section class="sci__sec" id="s7" aria-labelledby="s7-h">
+        <header class="sci__head" data-reveal><span class="sci__idx">{s.s7.index}</span><h2 class="h2" id="s7-h">{s.s7.title}</h2></header>
+        <p class="lede" data-reveal>{s.s7.body}</p>
+        <div class="cmp-wrap" data-reveal>
+          <table class="cmp">
+            <thead><tr>{s.s7.compareHeads.map((h, i) => <th scope="col" class:list={{ 'cmp__rnova': i === 2 }}>{h}</th>)}</tr></thead>
+            <tbody>
+              {s.s7.compare.map((row) => (
+                <tr><th scope="row">{row.label}</th><td>{row.a}</td><td class="cmp__rnova">{row.b}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted">{s.s7.disclaimer}</p>
+      </section>
+    </div>
+  </div>
+
+  <PartnershipCTA lang={lang} />
+</BaseLayout>
+
+<script>
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+  if (links.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        links.forEach((l) => l.toggleAttribute('aria-current', l.dataset.tocLink === e.target.id));
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    links.forEach((l) => { const el = document.getElementById(l.dataset.tocLink!); if (el) io.observe(el); });
+  }
+</script>
+
+<style>
+  .sci { display: grid; gap: 40px; padding-block: var(--section-y); }
+  @media (min-width: 1100px) { .sci { grid-template-columns: 240px 1fr; gap: 72px; } }
+  .sci__toc { display: none; }
+  @media (min-width: 1100px) {
+    .sci__toc { display: block; position: sticky; top: calc(var(--header-h) + 32px); align-self: start; }
+  }
+  .sci__toc-h { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .sci__toc ol { list-style: none; display: grid; gap: 2px; border-left: 1px solid var(--line); }
+  .sci__toc a { display: flex; gap: 12px; padding: 8px 14px; margin-left: -1px; border-left: 2px solid transparent; color: var(--ink-2); text-decoration: none; font-size: 0.9rem; line-height: 1.35; }
+  .sci__toc a span { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); padding-top: 2px; }
+  .sci__toc a:hover { color: var(--violet-600); }
+  .sci__toc a[aria-current] { border-left-color: var(--violet-500); color: var(--ink); font-weight: 650; }
+
+  .sci__body { display: grid; gap: clamp(72px, 9vw, 128px); min-width: 0; }
+  .sci__sec { display: grid; gap: 28px; scroll-margin-top: calc(var(--header-h) + 24px); }
+  .sci__head { display: grid; gap: 10px; }
+  .sci__idx { font-family: var(--font-mono); font-size: 0.85rem; color: var(--violet-600); letter-spacing: 0.1em; }
+  .sci__cols { display: grid; gap: 32px; align-items: center; }
+  .sci__cols--top { align-items: start; }
+  @media (min-width: 860px) { .sci__cols { grid-template-columns: 1.2fr 0.8fr; } }
+  .sci__fig { margin: 0; background: var(--bg-soft); border-radius: var(--radius-lg); padding: 20px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .sv-ring { transform-origin: 150px 110px; animation: sv-spin 40s linear infinite; }
+    @keyframes sv-spin { to { transform: rotate(360deg); } }
+  }
+
+  .flow { margin: 0; display: grid; gap: 20px; padding: clamp(20px, 3vw, 32px); border: 1px solid var(--line); border-radius: var(--radius-lg); background: #fff; }
+  .flow__row { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; position: relative; }
+  .flow__node { display: grid; justify-items: center; gap: 10px; text-align: center; position: relative; }
+  .flow__node:not(:last-child)::after { content: '→'; position: absolute; right: -14px; top: 22px; color: var(--muted); font-size: 1.1rem; }
+  .flow__icon { width: 64px; height: 64px; border-radius: 18px; background: var(--bg-soft); display: grid; place-items: center; }
+  .flow__icon svg { width: 44px; height: 44px; }
+  .flow__node--3 .flow__icon { outline: 2px dashed #e04fd8; outline-offset: 3px; }
+  .flow__label { font-weight: 700; font-size: 0.95rem; }
+  .flow__gap { border-radius: var(--radius); background: linear-gradient(135deg, #fbf3ff, #f1f3ff); padding: 18px 20px; display: grid; gap: 6px; }
+  .flow__gap-h { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #b0249f; }
+  .flow__gap > p:nth-child(2) { font-weight: 650; }
+  .flow__bars { display: grid; gap: 8px; margin-top: 8px; }
+  .flow__bar { height: 26px; border-radius: 8px; display: flex; align-items: center; padding-left: 10px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; color: #fff; text-transform: uppercase; }
+  .flow__bar--mrna { width: 92%; background: linear-gradient(90deg, #2f5cf0, #7e1bf1); }
+  .flow__bar--protein { width: 12%; min-width: 96px; background: #e8e3f5; color: #6d6590; }
+
+  .facts { display: grid; gap: 20px; border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 24px; background: #fff; }
+  .facts dl { display: grid; gap: 12px; margin: 0; }
+  .facts dl div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .facts dt { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+  .facts dd { margin: 0; font-weight: 600; font-size: 0.95rem; }
+  .domain { margin: 0; display: grid; gap: 12px; }
+  .domain__bar { display: flex; align-items: center; gap: 6px; }
+  .domain__end { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+  .domain__rrm { flex: 0 0 44%; height: 22px; border-radius: 6px; background: var(--grad-cool); }
+  .domain__link { flex: 0 0 10%; height: 4px; background: #c8cee3; }
+  .domain__rs { flex: 1; height: 22px; border-radius: 6px; background: repeating-linear-gradient(90deg, #c02efd 0 6px, #e7a6f5 6px 10px); }
+  .domain__key { list-style: none; display: grid; gap: 6px; font-size: 0.85rem; color: var(--ink-2); }
+  .domain__key li { display: flex; gap: 8px; align-items: center; }
+  .domain__sw { width: 14px; height: 10px; border-radius: 3px; flex: none; }
+  .domain__sw--rrm { background: var(--grad-cool); }
+  .domain__sw--rs { background: #c02efd; }
+
+  .mech { display: grid; gap: 16px; }
+  @media (min-width: 820px) { .mech { grid-template-columns: 1fr 1fr; } }
+  .mech__col { border-radius: var(--radius-lg); padding: 24px; }
+  .mech__col--disease { background: #f6f5fa; border: 1px solid #e3e1ee; }
+  .mech__col--concept { background: linear-gradient(160deg, #f1f4ff, #f6efff); border: 1px solid #dcd7fb; }
+  .mech__h { font-size: 1.05rem; margin-bottom: 16px; }
+  .mech__col--concept .mech__h { color: var(--violet-600); }
+  .mech ol { list-style: none; display: grid; gap: 0; }
+  .mech li { position: relative; padding: 12px 14px; border-radius: 10px; background: #fff; border: 1px solid var(--line); font-size: 0.94rem; font-weight: 550; }
+  .mech li:not(:last-child) { margin-bottom: 26px; }
+  .mech li:not(:last-child)::after { content: '↓'; position: absolute; left: 50%; bottom: -24px; transform: translateX(-50%); color: var(--muted); }
+  .mech__col--concept li:last-child { background: var(--grad-cool); color: #fff; border: 0; }
+  .mech__col--disease li:last-child { background: #5d587f; color: #fff; border: 0; }
+  .mech__note { font-size: 0.92rem; color: var(--ink-2); padding: 16px 18px; border-radius: var(--radius); background: var(--bg-soft); border-left: 3px solid var(--violet-500); }
+
+  .eatme { display: grid; grid-template-columns: 96px 1fr; gap: 20px; align-items: center; padding: 22px; border-radius: var(--radius-lg); border: 1px solid #e4d9fb; background: linear-gradient(160deg, #fff, #f6f0ff); }
+  .eatme__art { width: 96px; }
+  .eatme__text { margin-top: 10px; color: var(--ink-2); }
+
+  .cmp-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-lg); }
+  .cmp { min-width: 560px; }
+  .cmp th, .cmp td { text-align: left; padding: 16px 20px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 0.95rem; }
+  .cmp thead th { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--bg-soft); }
+  .cmp tbody th { font-weight: 650; width: 22%; }
+  .cmp tbody tr:last-child > * { border-bottom: 0; }
+  .cmp td.cmp__rnova { background: rgba(126, 27, 241, 0.04); font-weight: 600; }
+  .cmp thead th.cmp__rnova { color: var(--violet-600); background: #f3edff; }
+
+  @media (max-width: 560px) {
+    .flow__row { grid-template-columns: repeat(2, 1fr); row-gap: 20px; }
+    .flow__node:nth-child(2)::after { display: none; }
+    .eatme { grid-template-columns: 1fr; }
+  }
+</style>

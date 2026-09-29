@@ -1,0 +1,16 @@
+---
+import { pubById, doiUrl } from '../data/publications';
+import { t } from '../i18n';
+import type { Lang } from '../data/site';
+
+interface Props { ids: string[]; lang: Lang; class?: string }
+const { ids, lang, class: className } = Astro.props;
+const d = t(lang);
+const pubs = ids.map(pubById);
+---
+<p class:list={['cite', className]}>
+  <span class="cite__label">{pubs.length > 1 ? d.common.sources : d.common.source}</span>
+  {pubs.map((p) => (
+    <a href={doiUrl(p.doi)} target="_blank" rel="noopener noreferrer">{p.shortCite}<span class="sr-only"> (DOI {p.doi}{lang === 'fr' ? ', s’ouvre dans un nouvel onglet' : ', opens in a new tab'})</span></a>
+  ))}
+</p>

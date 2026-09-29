@@ -1,0 +1,49 @@
+---
+import type { Publication } from '../data/publications';
+import { doiUrl, topicLabels } from '../data/publications';
+import type { Lang } from '../data/site';
+import { t, l } from '../i18n';
+
+interface Props { pub: Publication; lang: Lang }
+const { pub, lang } = Astro.props;
+const d = t(lang);
+---
+<article class="pc card card--lift" data-topics={pub.topics.join(' ')} id={pub.id}>
+  <div class="pc__meta">
+    <span class="pc__year">{pub.year}</span>
+    <span class="pc__journal">{pub.journal}</span>
+    <span class="pc__cit">{pub.citation}</span>
+  </div>
+  <h3 class="pc__title" lang="en">{pub.title}</h3>
+  <p class="pc__authors"><span class="sr-only">{d.publications.authors}: </span>{pub.authors}</p>
+  <div class="pc__why">
+    <p class="pc__why-h">{d.publications.why}</p>
+    <p>{l(pub.relevance, lang)}</p>
+  </div>
+  <div class="pc__foot">
+    <ul class="pc__topics" aria-label={d.publications.filterLabel}>
+      {pub.topics.map((tp) => <li class="tag">{l(topicLabels[tp], lang)}</li>)}
+    </ul>
+    <a class="link-arrow" href={doiUrl(pub.doi)} target="_blank" rel="noopener noreferrer">
+      {d.common.doi} {pub.doi}
+      <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      <span class="sr-only">{lang === 'fr' ? '(s’ouvre dans un nouvel onglet)' : '(opens in a new tab)'}</span>
+    </a>
+  </div>
+</article>
+
+<style>
+  .pc { display: grid; gap: 14px; }
+  .pc__meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; }
+  .pc__year { font-weight: 500; color: #fff; background: var(--grad-cool); padding: 3px 9px; border-radius: 999px; }
+  .pc__journal { color: var(--violet-600); text-transform: uppercase; letter-spacing: 0.1em; }
+  .pc__cit { color: var(--muted); }
+  .pc__title { font-size: 1.22rem; line-height: 1.3; letter-spacing: -0.012em; }
+  .pc__authors { font-size: 0.88rem; color: var(--muted); }
+  .pc__why { border-left: 2px solid; border-image: var(--grad-cool) 1; padding-left: 16px; }
+  .pc__why-h { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .pc__why p:last-child { color: var(--ink-2); font-size: 0.97rem; }
+  .pc__foot { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .pc__topics { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+  .pc .link-arrow { font-size: 0.9rem; word-break: break-all; }
+</style>

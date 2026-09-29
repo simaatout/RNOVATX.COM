@@ -1,0 +1,27 @@
+---
+/** Decorative RNA strand with base "ticks" — used as a section motif. */
+interface Props { class?: string; id?: string }
+const { class: className, id = `rs${Math.random().toString(36).slice(2, 7)}` } = Astro.props;
+const yAt = (x: number) => 60 + Math.sin(((x * Math.PI) / 700) * 3) * 34;
+const ticks = Array.from({ length: 22 }, (_, i) => {
+  const x = 20 + i * 32;
+  const up = Math.cos(((x * Math.PI) / 700) * 3) > 0;
+  const len = 10 + (i % 3) * 4;
+  return `M${x} ${yAt(x).toFixed(1)} v${up ? -len : len}`;
+});
+const strandD = 'M0 60 ' + Array.from({ length: 71 }, (_, i) => `L${(i * 10.5).toFixed(1)} ${yAt(i * 10.5).toFixed(1)}`).join(' ');
+---
+<svg class:list={['rna-strand', className]} viewBox="0 0 740 120" fill="none" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id={`${id}-g`} x1="0" x2="1">
+      <stop offset="0" stop-color="#1e61ed" stop-opacity="0.2" />
+      <stop offset="0.35" stop-color="#3a3dfc" />
+      <stop offset="0.7" stop-color="#7e1bf1" />
+      <stop offset="1" stop-color="#fe8be4" stop-opacity="0.4" />
+    </linearGradient>
+  </defs>
+  <path d={strandD} stroke={`url(#${id}-g)`} stroke-width="3" stroke-linecap="round" />
+  <g stroke={`url(#${id}-g)`} stroke-width="3" stroke-linecap="round" opacity="0.7">
+    {ticks.map((d) => <path d={d} />)}
+  </g>
+</svg>
