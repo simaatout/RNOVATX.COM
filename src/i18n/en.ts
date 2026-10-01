@@ -61,7 +61,7 @@ export const en = {
     home: {
       title: 'RNOVA Tx | RNA Therapeutics for CNS Diseases',
       description:
-        'RNOVA Tx is a Québec-based biotechnology company developing cell-targeted antisense therapeutics that modulate SRSF3 to reprogram dysfunctional innate immunity in ALS, Alzheimer’s disease and related neurodegenerative diseases.',
+        'RNOVA Tx is a Québec-based biotechnology company developing cell-targeted antisense therapeutics that modulate SRSF3 to reprogram dysfunctional innate immunity in ALS and related neurodegenerative diseases.',
     },
     about: {
       title: 'About | RNOVA Tx',
@@ -76,7 +76,7 @@ export const en = {
     pipeline: {
       title: 'Pipeline | RNOVA Tx',
       description:
-        'RNOVA Tx is advancing SRSF3-directed targeted antisense programs in ALS and Alzheimer’s disease, with a next-generation cell-targeted delivery platform.',
+        'RNOVA Tx is advancing SRSF3-directed targeted antisense programs, led by ALS, with a next-generation cell-targeted delivery platform.',
     },
     research: {
       title: 'Research Overview | RNOVA Tx',
@@ -180,16 +180,14 @@ export const en = {
     reach: {
       index: '05',
       kicker: 'Therapeutic reach',
-      title: 'Two lead indications. One platform.',
+      title: 'ALS first. Not ALS only.',
       body:
-        'ALS and Alzheimer’s disease are our lead indications. Because dysfunctional innate immunity is a shared feature of many neurodegenerative diseases, the SRSF3 approach may advance to related CNS disorders.',
-      core: { short: 'ALS · AD', tag: 'Lead indications' },
-      leads: [
-        { tag: 'Lead indication', name: 'ALS', text: 'Amyotrophic lateral sclerosis — the disease in which the team characterized microglial dysfunction, with preclinical evidence for SRSF3 targeting in ALS mouse models, including TDP-43 models.' },
-        { tag: 'Lead indication', name: 'Alzheimer’s disease', text: 'A second lead indication, supported by preclinical studies of SRSF3 targeting in mouse models.' },
+        'ALS is our lead indication. Because dysfunctional innate immunity is a shared feature of many neurodegenerative diseases, the SRSF3 approach may extend to related CNS disorders.',
+      lead: { tag: 'Lead indication', name: 'ALS', text: 'Amyotrophic lateral sclerosis — the focus of RNOVA Tx’s lead program and the disease in which microglial dysfunction has been characterized by the team.' },
+      advancement: [
+        { tag: 'Advancement', name: 'Related neurodegenerative diseases', text: 'Including frontotemporal dementia (FTD), Alzheimer’s disease (AD) and related dementias.' },
       ],
-      advancement: { tag: 'Advancement', name: 'Related neurodegenerative diseases', text: 'Including the ALS–frontotemporal dementia (FTD) spectrum and other conditions marked by microglial dysfunction.' },
-      footnote: 'All RNOVA Tx programs are preclinical. Evidence to date comes from experimental models; clinical efficacy has not been established.',
+      footnote: 'All RNOVA Tx programs are at the research and preclinical stage. No clinical efficacy has been established.',
     },
     published: {
       index: '06',
@@ -204,7 +202,7 @@ export const en = {
     pipelinePreview: {
       index: '07',
       kicker: 'Pipeline',
-      title: 'An SRSF3 platform for ALS and Alzheimer’s disease.',
+      title: 'An SRSF3 platform, led by ALS.',
       cta: 'View pipeline',
     },
     path: {
@@ -236,7 +234,7 @@ export const en = {
         { title: 'A translational checkpoint', text: 'Parallel profiling of microglial mRNAs and proteins revealed that key immune transcripts are held back from translation — and implicated SRSF3.' },
         { title: 'A therapeutic hypothesis', text: 'If SRSF3 restrains immune protein synthesis in diseased microglia, reducing it could restore a more functional immune response.' },
         { title: 'Antisense strategies', text: 'SRSF3-directed antisense tools were developed and studied in experimental systems, supported by foundational intellectual property.' },
-        { title: 'RNOVA Tx', text: 'RNOVA Tx was created to advance this approach toward the clinic, beginning with ALS and Alzheimer’s disease.' },
+        { title: 'RNOVA Tx', text: 'RNOVA Tx was created to advance this approach toward the clinic, beginning with ALS.' },
       ],
     },
     mission: {
@@ -375,7 +373,7 @@ export const en = {
       kicker: 'Pipeline',
       title: 'SRSF3-directed targeted antisense.',
       lede:
-        'RNOVA Tx is advancing an SRSF3 platform in ALS and Alzheimer’s disease, supported by a next-generation cell-targeted delivery strategy. All programs are at the research and preclinical stage.',
+        'RNOVA Tx is advancing an SRSF3 platform led by ALS, supported by a next-generation cell-targeted delivery strategy. All programs are at the research and preclinical stage.',
     },
     headers: { program: 'Program', modality: 'Modality', indication: 'Indication', stage: 'Stage' },
     tbc: 'Stage to be confirmed',
@@ -399,7 +397,7 @@ export const en = {
       { year: '2020', title: 'Rethinking immunity in ALS', text: 'Excessive inflammation and inefficient immune responses can coexist in ALS.', pubs: ['beland-2020'] },
       { year: '2024', title: 'Chronic microglial dysfunction in neurodegeneration', text: 'Chronically activated ALS microglia lose immune functions and acquire an unconventional proteome.', pubs: ['barreto-nunez-2024'] },
       { year: '2024', title: 'Experimental SRSF3 targeting', text: 'After experimental stroke, SRSF3-directed siRNA restores translation of selected immune proteins in microglia/macrophages.', pubs: ['rahimian-2024'] },
-      { year: 'Now', title: 'RNOVA Tx translational development', text: 'Development of cell-targeted SRSF3-directed antisense therapeutics for ALS and Alzheimer’s disease.', pubs: [] },
+      { year: 'Now', title: 'RNOVA Tx translational development', text: 'Development of cell-targeted SRSF3-directed antisense therapeutics, led by ALS.', pubs: [] },
     ],
     links: { publications: 'Publication library', patent: 'Patent & IP' },
   },
