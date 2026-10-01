@@ -11,6 +11,7 @@ import type { Lang } from '../data/site';
 interface Props { lang: Lang; compact?: boolean }
 const { lang, compact = false } = Astro.props;
 const d = t(lang).pipeline;
+const colon = lang === 'fr' ? '\u00a0: ' : ': ';
 const pct = (i: number) => ((i + 1) / stages.length) * 100;
 ---
 <div class:list={['pl', { 'pl--compact': compact }]} data-reveal>
@@ -28,7 +29,7 @@ const pct = (i: number) => ((i + 1) / stages.length) * 100;
         <div role="cell" class="pl__prog">
           <span class="pl__kind">{d.kinds[p.kind]}</span>
           <span class="pl__name">{l(p.name, lang)}</span>
-          <span class="pl__target">{d.target}: {p.target}</span>
+          <span class="pl__target">{d.target}{colon}{p.target}</span>
         </div>
         {!compact && <div role="cell" class="pl__mod">{l(p.modality, lang)}</div>}
         <div role="cell" class="pl__ind">{l(p.indication, lang)}</div>
@@ -95,7 +96,7 @@ const pct = (i: number) => ((i + 1) / stages.length) * 100;
 
   .pl__cards { list-style: none; display: grid; gap: 14px; }
   .pl__card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: grid; gap: 8px; border-left: 4px solid; border-left-color: var(--indigo-500); }
-  .pl__card.pl__row--expansion { border-left-color: var(--violet-500); }
+  .pl__card.pl__row--advancement { border-left-color: var(--violet-500); }
   .pl__card.pl__row--platform { border-left-color: var(--purple-500); }
   .pl__card dl { display: grid; gap: 8px; margin: 6px 0 0; }
   .pl__card dl div { display: grid; grid-template-columns: 100px 1fr; gap: 12px; font-size: 0.92rem; }

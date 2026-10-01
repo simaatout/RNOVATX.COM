@@ -36,7 +36,7 @@ export interface Program {
   target: string;
   modality: Localized;
   indication: Localized;
-  kind: 'lead' | 'expansion' | 'platform';
+  kind: 'lead' | 'advancement' | 'platform';
   stageIndex: number | null;
   confirmed: boolean;
   disclosure: 'public';
@@ -56,27 +56,24 @@ export const programs: Program[] = [
     confirmed: false,
     disclosure: 'public',
     note: {
-      en: 'Lead indication. SRSF3-directed antisense designed to release translational repression of selected innate immune transcripts in microglia/macrophages.',
-      fr: 'Indication principale. Antisens dirigé contre SRSF3, conçu pour lever la répression traductionnelle de transcrits immunitaires innés sélectionnés dans la microglie et les macrophages.',
+      en: 'Lead indication, with preclinical evidence in ALS mouse models including TDP-43 models. SRSF3-directed antisense designed to release translational repression of selected innate immune transcripts in microglia/macrophages.',
+      fr: 'Indication principale, avec des données précliniques dans des modèles murins de SLA, dont des modèles TDP-43. Antisens dirigé contre SRSF3, conçu pour lever la répression traductionnelle de transcrits immunitaires innés sélectionnés dans la microglie et les macrophages.',
     },
   },
   {
-    id: 'expansion-neuro',
-    name: { en: 'Expansion program', fr: 'Programme d’expansion' }, // TODO_SUPERVISOR_CONFIRM_PROGRAM_NAMES
+    id: 'lead-ad',
+    name: { en: 'Lead program', fr: 'Programme principal' }, // TODO_SUPERVISOR_CONFIRM_PROGRAM_NAMES
     isPlaceholderName: true,
     target: 'SRSF3',
     modality: { en: 'Targeted antisense oligonucleotide', fr: 'Oligonucléotide antisens ciblé' },
-    indication: {
-      en: 'Related neurodegenerative diseases', // TODO_SUPERVISOR_CONFIRM_INDICATION_LABELS
-      fr: 'Maladies neurodégénératives apparentées',
-    },
-    kind: 'expansion',
+    indication: { en: 'Alzheimer’s disease', fr: 'Maladie d’Alzheimer' }, // TODO_SUPERVISOR_CONFIRM_INDICATION_LABELS
+    kind: 'lead',
     stageIndex: null,
     confirmed: false,
     disclosure: 'public',
     note: {
-      en: 'Exploring the relevance of the SRSF3 checkpoint in neurodegenerative conditions beyond ALS.',
-      fr: 'Évaluation de la pertinence du point de contrôle SRSF3 dans des maladies neurodégénératives au-delà de la SLA.',
+      en: 'Lead indication. SRSF3-directed antisense supported by preclinical studies in mouse models.',
+      fr: 'Indication principale. Antisens dirigé contre SRSF3, appuyé par des études précliniques dans des modèles murins.',
     },
   },
   {

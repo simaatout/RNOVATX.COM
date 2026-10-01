@@ -65,7 +65,7 @@ export const fr: Dict = {
     home: {
       title: 'RNOVA Tx | Thérapies à ARN pour les maladies du SNC',
       description:
-        'RNOVA Tx est une société de biotechnologie québécoise qui développe des thérapies antisens ciblées visant SRSF3 afin de reprogrammer l’immunité innée dysfonctionnelle dans la SLA et les maladies neurodégénératives apparentées.',
+        'RNOVA Tx est une société de biotechnologie québécoise qui développe des thérapies antisens ciblées visant SRSF3 afin de reprogrammer l’immunité innée dysfonctionnelle dans la SLA, la maladie d’Alzheimer et les maladies neurodégénératives apparentées.',
     },
     about: {
       title: 'À propos | RNOVA Tx',
@@ -80,7 +80,7 @@ export const fr: Dict = {
     pipeline: {
       title: 'Pipeline | RNOVA Tx',
       description:
-        'RNOVA Tx fait progresser des programmes d’antisens ciblés dirigés contre SRSF3, menés par la SLA, ainsi qu’une plateforme de livraison ciblée de nouvelle génération.',
+        'RNOVA Tx fait progresser des programmes d’antisens ciblés dirigés contre SRSF3 dans la SLA et la maladie d’Alzheimer, ainsi qu’une plateforme de livraison ciblée de nouvelle génération.',
     },
     research: {
       title: 'Aperçu de la recherche | RNOVA Tx',
@@ -184,15 +184,16 @@ export const fr: Dict = {
     reach: {
       index: '05',
       kicker: 'Portée thérapeutique',
-      title: 'La SLA d’abord. Pas seulement la SLA.',
+      title: 'Deux indications principales. Une plateforme.',
       body:
-        'La SLA est notre indication principale. Comme le dysfonctionnement de l’immunité innée est une caractéristique commune à de nombreuses maladies neurodégénératives, l’approche SRSF3 pourrait s’étendre à d’autres troubles apparentés du SNC.',
-      lead: { tag: 'Indication principale', name: 'SLA', text: 'Sclérose latérale amyotrophique — la cible du programme principal de RNOVA Tx et la maladie dans laquelle l’équipe a caractérisé le dysfonctionnement microglial.' },
-      expansion: [
-        { tag: 'Expansion', name: 'Maladies neurodégénératives apparentées', text: 'Notamment le spectre SLA–démence frontotemporale (DFT) et d’autres affections marquées par un dysfonctionnement microglial.' },
-        { tag: 'Exploratoire', name: 'Maladie d’Alzheimer', text: 'En cours d’exploration. La validation y est moins avancée que pour la SLA.' },
+        'La SLA et la maladie d’Alzheimer sont nos indications principales. Comme le dysfonctionnement de l’immunité innée est une caractéristique commune à de nombreuses maladies neurodégénératives, l’approche SRSF3 pourrait progresser vers d’autres troubles apparentés du SNC.',
+      core: { short: 'SLA · MA', tag: 'Indications principales' },
+      leads: [
+        { tag: 'Indication principale', name: 'SLA', text: 'Sclérose latérale amyotrophique — la maladie dans laquelle l’équipe a caractérisé le dysfonctionnement microglial, avec des données précliniques sur le ciblage de SRSF3 dans des modèles murins de SLA, dont des modèles TDP-43.' },
+        { tag: 'Indication principale', name: 'Maladie d’Alzheimer', text: 'Une deuxième indication principale, appuyée par des études précliniques du ciblage de SRSF3 dans des modèles murins.' },
       ],
-      footnote: 'Les indications au-delà de la SLA sont exploratoires et n’ont pas atteint le même niveau de validation expérimentale.',
+      advancement: { tag: 'Avancement', name: 'Maladies neurodégénératives apparentées', text: 'Notamment le spectre SLA–démence frontotemporale (DFT) et d’autres affections marquées par un dysfonctionnement microglial.' },
+      footnote: 'Tous les programmes de RNOVA Tx sont précliniques. Les données obtenues à ce jour proviennent de modèles expérimentaux; aucune efficacité clinique n’a été démontrée.',
     },
     published: {
       index: '06',
@@ -207,7 +208,7 @@ export const fr: Dict = {
     pipelinePreview: {
       index: '07',
       kicker: 'Pipeline',
-      title: 'Une plateforme SRSF3, menée par la SLA.',
+      title: 'Une plateforme SRSF3 pour la SLA et la maladie d’Alzheimer.',
       cta: 'Voir le pipeline',
     },
     path: {
@@ -239,7 +240,7 @@ export const fr: Dict = {
         { title: 'Un point de contrôle traductionnel', text: 'Le profilage parallèle des ARNm et des protéines microgliales a révélé que des transcrits immunitaires clés ne sont pas traduits — et a mis en cause SRSF3.' },
         { title: 'Une hypothèse thérapeutique', text: 'Si SRSF3 freine la synthèse de protéines immunitaires dans la microglie malade, la réduire pourrait rétablir une réponse immunitaire plus fonctionnelle.' },
         { title: 'Des stratégies antisens', text: 'Des outils antisens dirigés contre SRSF3 ont été développés et étudiés dans des systèmes expérimentaux, appuyés par une propriété intellectuelle fondatrice.' },
-        { title: 'RNOVA Tx', text: 'RNOVA Tx a été créée pour faire progresser cette approche vers la clinique, en commençant par la SLA.' },
+        { title: 'RNOVA Tx', text: 'RNOVA Tx a été créée pour faire progresser cette approche vers la clinique, en commençant par la SLA et la maladie d’Alzheimer.' },
       ],
     },
     mission: {
@@ -378,11 +379,11 @@ export const fr: Dict = {
       kicker: 'Pipeline',
       title: 'Des antisens ciblés dirigés contre SRSF3.',
       lede:
-        'RNOVA Tx fait progresser une plateforme SRSF3 menée par la SLA et appuyée par une stratégie de livraison ciblée de nouvelle génération. Tous les programmes en sont aux stades de la recherche et du développement préclinique.',
+        'RNOVA Tx fait progresser une plateforme SRSF3 dans la SLA et la maladie d’Alzheimer, appuyée par une stratégie de livraison ciblée de nouvelle génération. Tous les programmes en sont aux stades de la recherche et du développement préclinique.',
     },
     headers: { program: 'Programme', modality: 'Modalité', indication: 'Indication', stage: 'Stade' },
     tbc: 'Stade à confirmer',
-    kinds: { lead: 'Principal', expansion: 'Expansion', platform: 'Plateforme' },
+    kinds: { lead: 'Principal', advancement: 'Avancement', platform: 'Plateforme' },
     target: 'Cible',
     legend: 'Les stades de développement ne sont affichés qu’une fois confirmés. Un tracé pointillé indique que le stade n’a pas encore été rendu public.',
     note: 'Aucun programme de RNOVA Tx n’a atteint les essais cliniques. Les noms de programmes, les indications et les stades seront mis à jour à mesure qu’ils seront confirmés.',
@@ -402,7 +403,7 @@ export const fr: Dict = {
       { year: '2020', title: 'Repenser l’immunité dans la SLA', text: 'Inflammation excessive et réponses immunitaires inefficaces peuvent coexister dans la SLA.', pubs: ['beland-2020'] },
       { year: '2024', title: 'Dysfonctionnement microglial chronique', text: 'La microglie chroniquement activée dans la SLA perd ses fonctions immunitaires et acquiert un protéome inhabituel.', pubs: ['barreto-nunez-2024'] },
       { year: '2024', title: 'Ciblage expérimental de SRSF3', text: 'Après un AVC expérimental, un ARNsi dirigé contre SRSF3 rétablit la traduction de protéines immunitaires sélectionnées dans la microglie et les macrophages.', pubs: ['rahimian-2024'] },
-      { year: 'Aujourd’hui', title: 'Développement translationnel de RNOVA Tx', text: 'Développement de thérapies antisens ciblées dirigées contre SRSF3, menées par la SLA.', pubs: [] },
+      { year: 'Aujourd’hui', title: 'Développement translationnel de RNOVA Tx', text: 'Développement de thérapies antisens ciblées dirigées contre SRSF3 pour la SLA et la maladie d’Alzheimer.', pubs: [] },
     ],
     links: { publications: 'Bibliothèque de publications', patent: 'Brevet et PI' },
   },
