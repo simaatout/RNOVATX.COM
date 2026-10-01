@@ -8,7 +8,7 @@
 export const site = {
   name: 'RNOVA Tx',
   legalNameNote: 'Brand name as used on public materials.',
-  email: 'rnovatx@gmail.com',
+  email: 'info@rnovatx.com',
   city: { en: 'Québec City, Canada', fr: 'Québec, Canada' },
   roots: {
     en: 'Université Laval · CERVO Brain Research Centre',

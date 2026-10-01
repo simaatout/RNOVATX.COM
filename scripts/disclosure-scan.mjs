@@ -14,7 +14,7 @@ const patterns = [
   { name: 'Phone number', re: /\(?\b\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}\b/g },
   { name: 'Nucleotide sequence', re: /\b[ACGTU]{15,}\b/gi },
   { name: 'Peptide sequence (3-letter)', re: /\b(?:(?:Ala|Arg|Asn|Asp|Cys|Gln|Glu|Gly|His|Ile|Leu|Lys|Met|Phe|Pro|Ser|Thr|Trp|Tyr|Val)[\s-]){6,}/g },
-  { name: 'Email other than rnovatx@gmail.com', re: /[\w.+-]+@[\w-]+\.[\w.]+/g, allow: (m) => m === 'rnovatx@gmail.com' || m.endsWith('.png') || m.endsWith('.webp') },
+  { name: 'Email other than info@rnovatx.com', re: /[\w.+-]+@[\w-]+\.[\w.]+/g, allow: (m) => m === 'info@rnovatx.com' || m.endsWith('.png') || m.endsWith('.webp') },
   { name: 'Unpublished manuscript reference', re: /\bin preparation\b|\bsubmitted\)|\bunpublished data\b/gi },
 ];
 
