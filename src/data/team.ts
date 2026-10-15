@@ -2,6 +2,8 @@ import type { ImageMetadata } from 'astro';
 import type { Localized } from './site';
 import jasnaKriz from '../assets/team/jasna-kriz.webp';
 import simaAlAtout from '../assets/team/sima-al-atout.png';
+import hejerBoutej from '../assets/team/hejer-boutej.jpg';
+import victorCoelho from '../assets/team/victor-coelho.jpg';
 
 /**
  * Team — edit titles, bios and photos here.
@@ -9,10 +11,8 @@ import simaAlAtout from '../assets/team/sima-al-atout.png';
  * To add a photo: drop the file in src/assets/team/, import it above,
  * and set `photo` on the person. Initials are shown until then.
  *
- * TODO_TEAM_PHOTO_HEJER
  * TODO_TEAM_PHOTO_SONIA
  * TODO_TEAM_PHOTO_YUAN
- * TODO_TEAM_PHOTO_VICTOR
  *
  * Bios are limited to information that is public (institutional profiles,
  * peer-reviewed papers, the granted patent) or supplied by the person.
@@ -61,7 +61,8 @@ export const team: Person[] = [
       en: 'Co-founder · MBA Candidate',
       fr: 'Cofondatrice · Candidate au MBA',
     },
-    // photo: TODO_TEAM_PHOTO_HEJER
+    photo: hejerBoutej,
+    photoPosition: '50% 30%',
     bio: {
       en: 'Dr. Hejer Boutej is a co-founder of RNOVA Tx and co-inventor of the foundational SRSF3 patent. As first author of the 2017 Cell Reports study, she led the ribosome-profiling work showing that SRSF3 suppresses translation of highly upregulated innate immune transcripts in microglia. Her expertise spans transcriptomics, proteomics and models of neuroinflammation. She is currently an MBA candidate.',
       fr: 'La Dre Hejer Boutej est cofondatrice de RNOVA Tx et co-inventrice du brevet fondateur sur SRSF3. Première autrice de l’étude publiée en 2017 dans Cell Reports, elle a dirigé les travaux de profilage ribosomique montrant que SRSF3 réprime la traduction de transcrits immunitaires innés fortement induits dans la microglie. Son expertise couvre la transcriptomique, la protéomique et les modèles de neuroinflammation. Elle est actuellement candidate au MBA.',
@@ -99,7 +100,8 @@ export const team: Person[] = [
     initials: 'VC',
     group: 'team',
     title: { en: 'PhD Student', fr: 'Doctorant' },
-    // photo: TODO_TEAM_PHOTO_VICTOR
+    photo: victorCoelho,
+    photoPosition: '42% 30%',
     bio: {
       en: 'Victor Coelho is a PhD student in the Neuroscience graduate program at Université Laval. His doctoral research investigates how SRSF3 contributes to microglial dysfunction in neurodegeneration, extending the RNOVA Tx scientific program beyond its lead ALS focus.',
       fr: 'Victor Coelho est doctorant au programme de neurosciences de l’Université Laval. Ses travaux de doctorat portent sur la contribution de SRSF3 au dysfonctionnement microglial dans la neurodégénérescence, prolongeant le programme scientifique de RNOVA Tx au-delà de son axe principal, la SLA.',
