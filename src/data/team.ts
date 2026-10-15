@@ -117,8 +117,8 @@ export const team: Person[] = [
     photo: simaAlAtout,
     photoPosition: '50% 30%',
     bio: {
-      en: 'Sima Al Atout is a PhD student in Neuroscience at Université Laval, with training spanning genetics, cell and molecular biology, and biotechnology. She holds an MSc in Biotechnology from Northeastern University and an HBSc from the University of Toronto. Her interests centre on translational approaches to neurodegenerative disease and emerging RNA-based therapeutics.',
-      fr: 'Sima Al Atout est doctorante en neurosciences à l’Université Laval. Sa formation couvre la génétique, la biologie cellulaire et moléculaire ainsi que la biotechnologie. Elle est titulaire d’une maîtrise en biotechnologie de la Northeastern University et d’un baccalauréat spécialisé (HBSc) de l’Université de Toronto. Ses intérêts portent sur les approches translationnelles des maladies neurodégénératives et les nouvelles thérapies à base d’ARN.',
+      en: 'Sima Al Atout is a PhD student in Neuroscience at Université Laval, whose doctoral research investigates the role of SRSF3 in regulating the innate immune response in ALS and related disorders. She holds an MSc in Biotechnology from Northeastern University and an HBSc from the University of Toronto. Her interests centre on translational approaches to neurodegenerative disease and emerging RNA-based therapeutics.',
+      fr: 'Sima Al Atout est doctorante en neurosciences à l’Université Laval. Ses travaux de doctorat portent sur le rôle de SRSF3 dans la régulation de la réponse immunitaire innée dans la SLA et les troubles apparentés. Elle est titulaire d’une maîtrise en biotechnologie de la Northeastern University et d’un baccalauréat spécialisé (HBSc) de l’Université de Toronto. Ses intérêts portent sur les approches translationnelles des maladies neurodégénératives et les nouvelles thérapies à base d’ARN.',
     },
   },
 ];
