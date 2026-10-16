@@ -58,14 +58,14 @@ export const team: Person[] = [
     initials: 'HB',
     group: 'founders',
     title: {
-      en: 'Co-founder · MBA Candidate',
-      fr: 'Cofondatrice · Candidate au MBA',
+      en: 'Co-founder & President',
+      fr: 'Cofondatrice et présidente',
     },
     photo: hejerBoutej,
-    photoPosition: '50% 30%',
+    photoPosition: '50% 22%',
     bio: {
-      en: 'Dr. Hejer Boutej is a co-founder of RNOVA Tx and co-inventor of the foundational SRSF3 patent. As first author of the 2017 Cell Reports study, she led the ribosome-profiling work showing that SRSF3 suppresses translation of highly upregulated innate immune transcripts in microglia. Her expertise spans transcriptomics, proteomics and models of neuroinflammation. She is currently an MBA candidate.',
-      fr: 'La Dre Hejer Boutej est cofondatrice de RNOVA Tx et co-inventrice du brevet fondateur sur SRSF3. Première autrice de l’étude publiée en 2017 dans Cell Reports, elle a dirigé les travaux de profilage ribosomique montrant que SRSF3 réprime la traduction de transcrits immunitaires innés fortement induits dans la microglie. Son expertise couvre la transcriptomique, la protéomique et les modèles de neuroinflammation. Elle est actuellement candidate au MBA.',
+      en: 'Dr. Hejer Boutej is co-founder and President of RNOVA Tx and co-inventor of the foundational SRSF3 patent. As first author of the 2017 Cell Reports study, she led the ribosome-profiling work showing that SRSF3 suppresses translation of highly upregulated innate immune transcripts in microglia. Her expertise spans transcriptomics, proteomics and models of neuroinflammation. She is currently an MBA candidate.',
+      fr: 'La Dre Hejer Boutej est cofondatrice et présidente de RNOVA Tx, ainsi que co-inventrice du brevet fondateur sur SRSF3. Première autrice de l’étude publiée en 2017 dans Cell Reports, elle a dirigé les travaux de profilage ribosomique montrant que SRSF3 réprime la traduction de transcrits immunitaires innés fortement induits dans la microglie. Son expertise couvre la transcriptomique, la protéomique et les modèles de neuroinflammation. Elle est actuellement candidate au MBA.',
     },
   },
   {
