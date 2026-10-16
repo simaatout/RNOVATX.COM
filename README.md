@@ -108,7 +108,7 @@ In `src/data/pipeline.ts`, set a program's `name`, then `stageIndex` (0 = Discov
 | `TODO_SUPERVISOR_CONFIRM_PIPELINE_STAGES` | No stage is shown until confirmed |
 | `TODO_SUPERVISOR_CONFIRM_INDICATION_LABELS` | Expansion indication label |
 | `TODO_IP_LICENSE_STATUS_CONFIRM` | RNOVA Tx's rights to US 11,530,258 are not stated; wording is neutral |
-| `TODO_TEAM_PHOTO_SONIA` / `_YUAN` | Initials shown until photos are supplied |
+| `TODO_TEAM_PHOTO_SONIA` | Initials shown until a photo is supplied |
 | `TODO_TEAM_BIO_CONFIRM` | Each person should approve their bio |
 | `TODO_FRENCH_TAGLINE_CONFIRM` | French tagline is provisional |
 

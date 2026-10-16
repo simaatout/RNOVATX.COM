@@ -4,6 +4,7 @@ import jasnaKriz from '../assets/team/jasna-kriz.webp';
 import simaAlAtout from '../assets/team/sima-al-atout.png';
 import hejerBoutej from '../assets/team/hejer-boutej.jpg';
 import victorCoelho from '../assets/team/victor-coelho.jpg';
+import yuanChengWeng from '../assets/team/yuan-cheng-weng.jpg';
 
 /**
  * Team — edit titles, bios and photos here.
@@ -12,7 +13,6 @@ import victorCoelho from '../assets/team/victor-coelho.jpg';
  * and set `photo` on the person. Initials are shown until then.
  *
  * TODO_TEAM_PHOTO_SONIA
- * TODO_TEAM_PHOTO_YUAN
  *
  * Bios are limited to information that is public (institutional profiles,
  * peer-reviewed papers, the granted patent) or supplied by the person.
@@ -87,7 +87,8 @@ export const team: Person[] = [
     initials: 'YCW',
     group: 'team',
     title: { en: 'Research Assistant', fr: 'Assistant de recherche' },
-    // photo: TODO_TEAM_PHOTO_YUAN
+    photo: yuanChengWeng,
+    photoPosition: '50% 25%',
     bio: {
       en: 'Yuan Cheng Weng brings long-standing in vivo neuroscience research experience from the CERVO Brain Research Centre. A co-author on multiple peer-reviewed studies of microglia and innate immunity after brain injury, including the 2024 Molecular Therapy study on SRSF3 targeting, Yuan Cheng Weng contributes surgical and in vivo expertise to RNOVA Tx.',
       fr: 'Yuan Cheng Weng possède une longue expérience de la recherche in vivo en neurosciences au Centre de recherche CERVO. Coauteur de plusieurs études révisées par les pairs sur la microglie et l’immunité innée après une lésion cérébrale, dont l’étude de 2024 parue dans Molecular Therapy sur le ciblage de SRSF3, Yuan Cheng Weng apporte à RNOVA Tx son expertise chirurgicale et in vivo.',
