@@ -3,12 +3,13 @@
  * JSON-LD read from this file.
  *
  * Only publicly verified information belongs here. Do not add a legal address,
- * founding date, telephone number or social accounts until they are confirmed.
+ * founding date or telephone number until they are confirmed.
  */
 export const site = {
   name: 'RNOVA Tx',
   legalNameNote: 'Brand name as used on public materials.',
   email: 'info@rnovatx.com',
+  linkedin: 'https://www.linkedin.com/company/rnovatx/',
   city: { en: 'Québec City, Canada', fr: 'Québec, Canada' },
   roots: {
     en: 'Université Laval · CERVO Brain Research Centre',
