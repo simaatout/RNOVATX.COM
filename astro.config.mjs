@@ -12,7 +12,7 @@ import { defineConfig } from 'astro/config';
  * The GitHub Actions workflow sets both automatically from `actions/configure-pages`.
  * Locally they default to a root deployment.
  */
-const site = process.env.SITE_URL || 'https://simaatout.github.io';
+const site = process.env.SITE_URL || 'https://rnovatx.com';
 const base = process.env.BASE_PATH || '/';
 
 export default defineConfig({

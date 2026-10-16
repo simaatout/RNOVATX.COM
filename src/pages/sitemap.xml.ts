@@ -3,7 +3,7 @@ import { routes, href, languages, type RouteKey } from '../i18n';
 
 /** Bilingual sitemap with hreflang alternates. */
 export const GET: APIRoute = ({ site }) => {
-  const origin = site ?? new URL('https://simaatout.github.io');
+  const origin = site ?? new URL('https://rnovatx.com');
   const abs = (p: string) => new URL(p, origin).href;
   const urls = (Object.keys(routes) as RouteKey[]).flatMap((key) =>
     languages.map((lang) => {

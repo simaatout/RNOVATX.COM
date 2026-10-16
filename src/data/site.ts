@@ -10,6 +10,13 @@ export const site = {
   legalNameNote: 'Brand name as used on public materials.',
   email: 'info@rnovatx.com',
   linkedin: 'https://www.linkedin.com/company/rnovatx/',
+  /** Other names people search for — used in structured data so Google matches them to this site. */
+  alternateNames: ['RNOVA', 'RNOVA Therapeutics', 'RNOVATX'],
+  /**
+   * Google Search Console "HTML tag" verification token (the content="…" value only).
+   * Leave empty if the domain is verified via DNS instead.
+   */
+  googleSiteVerification: '',
   city: { en: 'Québec City, Canada', fr: 'Québec, Canada' },
   roots: {
     en: 'Université Laval · CERVO Brain Research Centre',

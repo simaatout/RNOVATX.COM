@@ -16,25 +16,40 @@ interface Props {
 }
 const { lang, route, title, description, overDarkHeader = false } = Astro.props;
 const d = t(lang);
-const siteUrl = Astro.site ?? new URL('https://simaatout.github.io');
+const siteUrl = Astro.site ?? new URL('https://rnovatx.com');
 const abs = (path: string) => new URL(path, siteUrl).href;
 const canonical = abs(href(route, lang));
 const ogImage = abs(asset('og-image.png'));
 const locale = lang === 'fr' ? 'fr_CA' : 'en_CA';
 
-// Organization JSON-LD — verified facts only (no address, phone, founding date or social accounts).
+// Structured data — verified facts only (no street address, phone or founding date).
+const homeUrl = abs(href('home', 'en'));
 const orgLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': `${homeUrl}#organization`,
   name: site.name,
-  url: abs(href('home', 'en')),
-  logo: ogImage,
+  alternateName: site.alternateNames,
+  url: homeUrl,
+  logo: abs(asset('logo.png')),
+  image: ogImage,
   email: site.email,
   sameAs: [site.linkedin],
   description: t('en').meta.home.description,
   areaServed: 'Worldwide',
   address: { '@type': 'PostalAddress', addressLocality: 'Québec', addressRegion: 'QC', addressCountry: 'CA' },
   knowsAbout: ['RNA therapeutics', 'Antisense oligonucleotides', 'SRSF3', 'Microglia', 'Innate immunity', 'Amyotrophic lateral sclerosis', 'Neurodegenerative disease'],
+};
+// WebSite entity: tells Google the site name to show in results.
+const siteLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${homeUrl}#website`,
+  name: site.name,
+  alternateName: site.alternateNames,
+  url: homeUrl,
+  inLanguage: ['en', 'fr-CA'],
+  publisher: { '@id': `${homeUrl}#organization` },
 };
 ---
 <!doctype html>
@@ -67,7 +82,8 @@ const orgLd = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    {route === 'home' && <script type="application/ld+json" set:html={JSON.stringify(orgLd)} />}
+    {route === 'home' && <script type="application/ld+json" set:html={JSON.stringify([orgLd, siteLd])} />}
+    {site.googleSiteVerification && <meta name="google-site-verification" content={site.googleSiteVerification} />}
     <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
   </head>
   <body>
