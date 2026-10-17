@@ -59,9 +59,9 @@ export const en = {
 
   meta: {
     home: {
-      title: 'RNOVA Tx | RNA Therapeutics for CNS Diseases',
+      title: 'RNOVA Tx (RNOVA Therapeutics) | RNA Therapeutics for CNS Diseases',
       description:
-        'RNOVA Tx is a Québec-based biotechnology company developing cell-targeted antisense therapeutics that modulate SRSF3 to reprogram dysfunctional innate immunity in ALS and related neurodegenerative diseases.',
+        'RNOVA Tx (RNOVA Therapeutics) is a Québec-based biotechnology company developing cell-targeted antisense therapeutics that modulate SRSF3 to reprogram dysfunctional innate immunity in ALS and related neurodegenerative diseases.',
     },
     about: {
       title: 'About | RNOVA Tx',
@@ -224,7 +224,7 @@ export const en = {
       kicker: 'About RNOVA Tx',
       title: 'From a discovery in microglia to a therapeutic company.',
       lede:
-        'RNOVA Tx is a Québec-based biotechnology company translating research on RNA regulation and innate immunity into targeted therapeutics for CNS diseases.',
+        'RNOVA Tx (RNOVA Therapeutics) is a Québec-based biotechnology company translating research on RNA regulation and innate immunity into targeted therapeutics for CNS diseases.',
     },
     story: {
       kicker: 'Our story',

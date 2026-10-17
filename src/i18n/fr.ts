@@ -63,9 +63,9 @@ export const fr: Dict = {
 
   meta: {
     home: {
-      title: 'RNOVA Tx | Thérapies à ARN pour les maladies du SNC',
+      title: 'RNOVA Tx (RNOVA Therapeutics) | Thérapies à ARN pour les maladies du SNC',
       description:
-        'RNOVA Tx est une société de biotechnologie québécoise qui développe des thérapies antisens ciblées visant SRSF3 afin de reprogrammer l’immunité innée dysfonctionnelle dans la SLA et les maladies neurodégénératives apparentées.',
+        'RNOVA Tx (RNOVA Therapeutics) est une société de biotechnologie québécoise qui développe des thérapies antisens ciblées visant SRSF3 afin de reprogrammer l’immunité innée dysfonctionnelle dans la SLA et les maladies neurodégénératives apparentées.',
     },
     about: {
       title: 'À propos | RNOVA Tx',
@@ -228,7 +228,7 @@ export const fr: Dict = {
       kicker: 'À propos de RNOVA Tx',
       title: 'D’une découverte sur la microglie à une entreprise thérapeutique.',
       lede:
-        'RNOVA Tx est une société de biotechnologie québécoise qui transforme la recherche sur la régulation de l’ARN et l’immunité innée en thérapies ciblées pour les maladies du SNC.',
+        'RNOVA Tx (RNOVA Therapeutics) est une société de biotechnologie québécoise qui transforme la recherche sur la régulation de l’ARN et l’immunité innée en thérapies ciblées pour les maladies du SNC.',
     },
     story: {
       kicker: 'Notre histoire',
