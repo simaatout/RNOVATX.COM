@@ -106,7 +106,7 @@ export const fr: Dict = {
 
   home: {
     hero: {
-      eyebrow: 'Thérapies à ARN · Immunité innée · SNC',
+      eyebrow: 'RNOVA Therapeutics',
       lede:
         'RNOVA Tx développe des thérapies antisens ciblées, conçues pour moduler SRSF3 et reprogrammer les réponses immunitaires innées dysfonctionnelles dans les maladies neurodégénératives.',
       states: ['Traduction réprimée', 'SRSF3 ciblée', 'Traduction rétablie'],

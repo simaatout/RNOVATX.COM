@@ -102,7 +102,7 @@ export const en = {
 
   home: {
     hero: {
-      eyebrow: 'RNA therapeutics · Innate immunity · CNS',
+      eyebrow: 'RNOVA Therapeutics',
       lede:
         'RNOVA Tx is developing cell-targeted antisense therapeutics designed to modulate SRSF3 and reprogram dysfunctional innate immune responses in neurodegenerative disease.',
       states: ['Translation repressed', 'SRSF3 targeted', 'Translation restored'],
