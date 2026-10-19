@@ -1,6 +1,6 @@
 import type { ImageMetadata } from 'astro';
 import type { Localized } from './site';
-import jasnaKriz from '../assets/team/jasna-kriz.webp';
+import jasnaKriz from '../assets/team/jasna-kriz.jpg';
 import simaAlAtout from '../assets/team/sima-al-atout.png';
 import hejerBoutej from '../assets/team/hejer-boutej.jpg';
 import victorCoelho from '../assets/team/victor-coelho.jpg';
@@ -44,7 +44,7 @@ export const team: Person[] = [
       fr: 'Cofondatrice et directrice scientifique par intérim',
     },
     photo: jasnaKriz,
-    photoPosition: '50% 22%',
+    photoPosition: '50% 28%',
     bio: {
       en: 'Dr. Jasna Kriz is a Professor in the Department of Psychiatry and Neuroscience at Université Laval’s Faculty of Medicine and a researcher at the CERVO Brain Research Centre. Her work focuses on microglia and innate immunity in the healthy brain, brain injury and neurodegenerative diseases such as ALS. She is the lead inventor of the foundational SRSF3 patent.',
       fr: 'La Dre Jasna Kriz est professeure au Département de psychiatrie et de neurosciences de la Faculté de médecine de l’Université Laval et chercheuse au Centre de recherche CERVO. Ses travaux portent sur la microglie et l’immunité innée dans le cerveau sain, les lésions cérébrales et les maladies neurodégénératives comme la SLA. Elle est l’inventrice principale du brevet fondateur sur SRSF3.',
