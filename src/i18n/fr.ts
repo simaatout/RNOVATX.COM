@@ -423,7 +423,7 @@ export const fr: Dict = {
     hero: {
       kicker: 'Brevet et PI',
       title: 'Une propriété intellectuelle fondatrice.',
-      lede: 'La plateforme SRSF3 s’appuie sur un brevet américain délivré et des demandes internationales connexes.',
+      lede: 'La plateforme SRSF3 s’appuie sur des brevets délivrés aux États-Unis, au Canada et en Europe.',
     },
     patentLabel: 'Brevet',
     titleLabel: 'Titre officiel',
@@ -438,7 +438,7 @@ export const fr: Dict = {
     priority: 'Priorité',
     claims: 'Revendications',
     family: 'Famille de brevets',
-    familyNote: 'Selon le registre public de WO 2019/095064. Les statuts peuvent évoluer.',
+    familyNote: 'Brevets délivrés aux États-Unis, au Canada et en Europe, issus de la demande internationale PCT/CA2018/051452.',
     jurisdiction: 'Territoire',
     number: 'Numéro',
     status: 'Statut',

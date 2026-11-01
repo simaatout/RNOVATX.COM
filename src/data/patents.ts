@@ -53,11 +53,9 @@ export const foundationalPatent = {
   /** Family members listed on the public WO 2019/095064 record. */
   family: [
     { jurisdiction: { en: 'United States', fr: 'États-Unis' }, number: 'US 11,530,258 B2', note: { en: 'Granted', fr: 'Délivré' } },
+    // Canada: grant confirmed by RNOVA Tx; add the kind code (e.g. "C") once the issued number is on the CIPO record.
+    { jurisdiction: { en: 'Canada', fr: 'Canada' }, number: 'CA 3,095,354', note: { en: 'Granted', fr: 'Délivré' } },
     { jurisdiction: { en: 'Europe (EPO)', fr: 'Europe (OEB)' }, number: 'EP 3710015 B1', note: { en: 'Granted', fr: 'Délivré' } },
-    { jurisdiction: { en: 'Canada', fr: 'Canada' }, number: 'CA 3095354 A1', note: { en: 'Published application', fr: 'Demande publiée' } },
-    { jurisdiction: { en: 'China', fr: 'Chine' }, number: 'CN 111556761 A', note: { en: 'Published application', fr: 'Demande publiée' } },
-    { jurisdiction: { en: 'Japan', fr: 'Japon' }, number: 'JP 2021502977 A', note: { en: 'Published application', fr: 'Demande publiée' } },
-    { jurisdiction: { en: 'PCT (WIPO)', fr: 'PCT (OMPI)' }, number: 'WO 2019/095064 A1', note: { en: 'International publication', fr: 'Publication internationale' } },
   ] as FamilyMember[],
 
   /** Neutral wording pending TODO_IP_LICENSE_STATUS_CONFIRM. */

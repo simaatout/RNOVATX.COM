@@ -419,7 +419,7 @@ export const en = {
     hero: {
       kicker: 'Patent & IP',
       title: 'Foundational intellectual property.',
-      lede: 'The SRSF3 platform is supported by a granted U.S. patent and related international filings.',
+      lede: 'The SRSF3 platform is supported by granted patents in the United States, Canada and Europe.',
     },
     patentLabel: 'Patent',
     titleLabel: 'Official title',
@@ -434,7 +434,7 @@ export const en = {
     priority: 'Priority',
     claims: 'Claims',
     family: 'Patent family',
-    familyNote: 'As listed on the public record for WO 2019/095064. Status may change.',
+    familyNote: 'Granted patents in the United States, Canada and Europe, from international application PCT/CA2018/051452.',
     jurisdiction: 'Jurisdiction',
     number: 'Number',
     status: 'Status',
