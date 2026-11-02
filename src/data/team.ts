@@ -5,6 +5,7 @@ import simaAlAtout from '../assets/team/sima-al-atout.png';
 import hejerBoutej from '../assets/team/hejer-boutej.jpg';
 import victorCoelho from '../assets/team/victor-coelho.jpg';
 import yuanChengWeng from '../assets/team/yuan-cheng-weng.jpg';
+import soniaDjebbar from '../assets/team/sonia-djebbar.jpg';
 
 /**
  * Team — edit titles, bios and photos here.
@@ -12,7 +13,6 @@ import yuanChengWeng from '../assets/team/yuan-cheng-weng.jpg';
  * To add a photo: drop the file in src/assets/team/, import it above,
  * and set `photo` on the person. Initials are shown until then.
  *
- * TODO_TEAM_PHOTO_SONIA
  *
  * Bios are limited to information that is public (institutional profiles,
  * peer-reviewed papers, the granted patent) or supplied by the person.
@@ -75,7 +75,8 @@ export const team: Person[] = [
     initials: 'SD',
     group: 'team',
     title: { en: 'Research Assistant', fr: 'Assistante de recherche' },
-    // photo: TODO_TEAM_PHOTO_SONIA
+    photo: soniaDjebbar,
+    photoPosition: '50% 25%',
     bio: {
       en: 'Sonia Djebbar is a research assistant supporting RNOVA Tx’s laboratory program. She contributes hands-on molecular and cellular biology work to the development and characterization of SRSF3-directed antisense tools.',
       fr: 'Sonia Djebbar est assistante de recherche au sein du programme de laboratoire de RNOVA Tx. Elle contribue, par ses travaux en biologie moléculaire et cellulaire, au développement et à la caractérisation des outils antisens dirigés contre SRSF3.',
